@@ -1,4 +1,5 @@
 import pandas as pd
+from DataObject.ComputedColumns import OriginalColumn
 
 class DataProcessor:
     
@@ -22,9 +23,9 @@ class DataProcessor:
         
         data = data.groupby('time').agg({'price':['min', 'max','mean'], 'volume':'sum'})#, 'BuyVol':'sum','SellVol': 'sum'})
             
-        data['PriceMax'] = data['price']['max']
-        data['PriceMin'] = data['price']['min']
-        data['PriceMean'] = data['price']['mean']
+        data[str(OriginalColumn.PRICE_MAX)] = data['price']['max']
+        data[str(OriginalColumn.PRICE_MIN)] = data['price']['min']
+        data[str(OriginalColumn.PRICE_MEAN)] = data['price']['mean']
         
         return data
         

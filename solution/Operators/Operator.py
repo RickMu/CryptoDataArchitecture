@@ -12,35 +12,49 @@ def rolling_sum(values):
 def rolling_avg(values):
     return rolling_sum(values)/len(values)
 
-def rollingRSI(data,inputname, periods):
-    values = data[inputname].rolling(periods).apply(rolling_rsi).fillna(0).values
+def rollingRSI(data,inputCols, periods):
+    inputname = inputCols[0]
+    values = data[inputname].rolling(periods).apply(rolling_rsi).fillna(0)
     return values
 
-def rollingSum(data, inputname, periods):
-    values = data[inputname].rolling(periods).apply(rolling_sum).fillna(0).values
+def rollingSum(data, inputCols, periods):
+    inputname = inputCols[0]
+    values = data[inputname].rolling(periods).apply(rolling_sum).fillna(0)
     return values
 
 
-def movingAvg(data, inputname ,periods):
-    values = data[inputname].rolling(periods).apply(rolling_avg).fillna(0).values
+def movingAvg(data,inputCols ,periods):
+    inputname = inputCols[0]
+    values = data[inputname].rolling(periods).apply(rolling_avg).fillna(0)
     return values
 
-def diff(data, inputname ,periods):
-    values =  (data[inputname] - data[inputname].shift(periods)).fillna(0).values
+def diff(data, inputCols ,periods):
+    inputname = inputCols[0]
+    values =  (data[inputname] - data[inputname].shift(periods)).fillna(0)
     return values
 
-def stoK(data, curname, maxname, minname, periods):
+def stoK(data, inputCols, periods):
+    curname = inputCols[0]
+    maxname = inputCols[1]
+    minname = inputCols[2]
     values = 100*((data[curname] - pd.rolling_min(data[minname],periods))
-    /(pd.rolling_max(data[maxname],periods) - pd.rolling_min(data[minname],periods))).fillna(0).values
+    /(pd.rolling_max(data[maxname],periods) - pd.rolling_min(data[minname],periods))).fillna(0)
     
     return values
 
-def willR(data, curname, maxname, minname,periods):
+def willR(data, inputCols,periods):
+    curname = inputCols[0]
+    maxname = inputCols[1]
+    minname = inputCols[2]
     values = 100*((pd.rolling_max(data[minname],periods)- data[curname])
-    /(pd.rolling_max(data[maxname],periods) - pd.rolling_min(data[minname],periods))).fillna(0).values
+    /(pd.rolling_max(data[maxname],periods) - pd.rolling_min(data[minname],periods))).fillna(0)
     return values
-def multiply(data,col1,col2):
+
+def multiply(data,inputCols,periods):
+    col1 = inputCols[0]
+    col2 = inputCols[1]
     data[col1] = data[col1]*data[col2]
+    return data[col1]
 
 class OperatorType(Enum):
     RSI = 1
@@ -62,7 +76,7 @@ class OperatorLookUp:
             OperatorType.MOVAVG: movingAvg,
             OperatorType.DIFF : diff,
             OperatorType.STOK: stoK,
-            OperatorType.WILLR: willR
+            OperatorType.WILLR: willR,
             OperatorType.MULTIPLY: multiply
         }
     

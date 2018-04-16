@@ -6,7 +6,7 @@ class ComputedColumn(Enum):
     MOMENTUM_SUM = 1<<2
     MOMENTUM_AVG = 1<<3
     MOMENTUM_WILLR = 1<<4
-    PRICe_STOK = 1<<5
+    PRICE_STOK = 1<<5
     PRICE_STOD = 1<<6
     PRICE_AVG = 1<<7
     VOL_WILLR = 1<<8

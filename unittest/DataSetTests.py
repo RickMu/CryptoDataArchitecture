@@ -27,8 +27,6 @@ class DataSetUnitTests(TestCase):
   
     def test_DataSet_Integrity(self):
         
-        
-        
         self.assertEqual(self.sut.getSize(), self.df.size)
 
         for x,y in zip(self.sut.getOriginalKeys(), self.df.keys()):
@@ -36,10 +34,15 @@ class DataSetUnitTests(TestCase):
 
     def test_dataSet_Read(self):
         data = self.sut.read('price')
-        print(data.size)
-        print(self.df.price.size)
         self.assertEqual(data.size,self.df.price.size)
 
+    def test_dataset_registerComputedColumn_Method(self):
+        test = 'TEST1'        
+       
+        self.sut.registerComputedColumn(test)
+
+        mock.assert_called_once()
+        self.assertEqual(True, test in self.sut.getComputedKeys())
 
 if __name__ == "__main__":
     unittest.main()

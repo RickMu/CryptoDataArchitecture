@@ -1,30 +1,35 @@
 import pandas as pd
 from abc import abstractmethod
 from Operators.Operator import OperatorLookUp
+from DataObject.ComputedColumns import OriginalColumn
 class RuleBase:
     
     @abstractmethod
     def compute(self,requiredData, periods, name,updatedLength):
         return
-    
+
 class ColumnRule(RuleBase):
     
-    def __init__(self,requiredColumns, ruleType):
+    def __init__(self,requiredColumns, operatorType, periods):
         self.__requiredColumns = requiredColumns
-        self.__ruleType = ruleType 
-    
+        self.__operatorType = operatorType 
+        self.__operator = OperatorLookUp.GetOperator(self.__operatorType)
+        self.__periods = periods
+
+    def getPeriods(self):
+        return self.__periods
+
     def checkOnRequiredColumns(self,data):
         ret = True
         for i in self.__requiredColumns:
             if i not in data.keys():
-                return False
+                raise Exception("No Such column in Data: %s" % str(i))
         return True
 
-    def compute(self,requiredData, periods, name,updatedLength):
+    def compute(self,requiredData, updatedLength):
         self.checkOnRequiredColumns(requiredData)
-        operator = OperatorLookUp.GetOperator(self.__ruleType)
-        data = operator(requiredData, 'PriceMean', periods)
-        return data[data.size-updatedLength:]
+        data = self.__operator(requiredData, self.__requiredColumns, self.__periods)
+        return data.iloc[len(data)-updatedLength:]
 
     def getRequiredColumns(self):
         return self.__requiredColumns
