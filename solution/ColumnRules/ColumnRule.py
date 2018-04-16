@@ -1,7 +1,7 @@
 import pandas as pd
 from abc import abstractmethod
-from Operators.Operator import OperatorLookUp
-from DataObject.ComputedColumns import OriginalColumn
+from solution.Operators.Operator import OperatorLookUp
+from solution.DataObject.ComputedColumns import OriginalColumn
 class RuleBase:
     
     @abstractmethod
