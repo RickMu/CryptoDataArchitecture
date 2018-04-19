@@ -3,66 +3,68 @@ import json
 from enum import Enum
 
 from solution.Schedular.IClient.IApiBuilder import IApiBuilder
+import datetime
 from solution.Schedular import ApiEndPoints
-class ServerRequest:
+class Ec2RequestBuilder:
+
     class Services:
         FindInBetween = 'findinbetween'
 
-
-
-    request = \
-        'http://ec2-35-169-63-106.compute-1.amazonaws.com/findinbetween?database=gdx&market=ETH-USD&start_date=2018-04-17T08:36&day=0&hour=3'
     def __init__(self):
-
-        self.rq = ApiEndPoints.EndPoints[ApiEndPoints.EndPointProviders.EC2]
-        self.p = PARAMS()
+        self._endpoint = ApiEndPoints.EndPoints.endPoints[ApiEndPoints.EndPointProviders.EC2]
+        self._cachedRequest = self._endpoint
 
     def database(self, db):
-        self.rq += (PARAMS.DB + "=" + db.Name)
+        self._cachedRequest += ("database=" + db)
         return self
 
     def getRequest(self):
-        request = self.rq
+        request = self._cachedRequest
         self.clear()
         return request
 
     def clear(self):
-        self.rq = ServerRequest.DNS  # +str(self.portnumber)
+        self._cachedRequest = self._endpoint  # +str(self.portnumber)
 
     def Service(self, service):
-        self.rq += ("/" + service)
+        self._cachedRequest += ("/" + service)
         return self
 
     def Query(self):
-        self.rq += "?"
+        self._cachedRequest += "?"
         return self
 
     def AND(self):
-        self.rq += "&"
+        self._cachedRequest += "&"
         return self
 
     def Date(self, date):
-        self.rq += (PARAMS.START_DATETIME + "=" + str(date))
+
+        self._cachedRequest += ("start_date=" + str(date))
 
     def Day(self, day):
-        self.rq += (PARAMS.DAY + "=" + str(day))
+
+        self._cachedRequest += ("day=" + str(day))
         return self
 
     def Hour(self, hour):
-        self.rq += (PARAMS.HOUR + "=" + str(hour))
+
+        self._cachedRequest += ("hour=" + str(hour))
         return self
 
     def Minute(self, minute):
-        self.rq += (PARAMS.MINUTE + "=" + str(minute))
+
+        self._cachedRequest += ("minute=" + str(minute))
         return self
 
     def Market(self, market):
-        self.rq += (PARAMS.MARKET + "=" + str(market))
+
+        self._cachedRequest += ("market=" + str(market))
         return self
 
     def buildFindAllRequest(self, market):
 
-        self.Service(ServerService.FindAll)
+        self.Service(Ec2RequestBuilder.Service.FindAll)
         self.Query()
         if (market is None):
             raise Exception("Market cannot be None")
@@ -71,22 +73,35 @@ class ServerRequest:
 
         return self.getRequest()
 
-    def buildFindInBetweenRequest(self, ticker, s_year, s_month, s_day, s_hour, s_minute, to_day, to_hour=0):
-        self.Service(ServerRequest.Services.FindInBetween)
+    def buildFindInBetweenRequest(self, ticker, start_datetime, timespan):
+
+        self.Service(Ec2RequestBuilder.Services.FindInBetween)
         self.Query()
+
+        self.database('gdx')
+
         self.AND()
         self.Market(ticker)
 
-        date = self.p.constructStartDate(s_year, s_month, s_day, s_hour, s_minute)
+        dateInString = self.dateTimeToString(start_datetime)
         self.AND()
-        self.Date(date)
-
-        if (to_day is not None):
-            self.AND()
-            self.Day(to_day)
-        if (to_hour is not None):
-            self.AND()
-            self.Hour(to_hour)
+        self.Date(dateInString)
+        self.AND()
+        self.Day(timespan[0])
+        self.AND()
+        self.Hour(timespan[1])
 
         return self.getRequest()
+
+    def dateTimeToString(self,date):
+        format =  '%Y-%m-%dT%H:%M'
+        d = datetime.datetime.strftime(date,format)
+        return d
+
+if __name__ == "__main__":
+    from solution.Schedular.Tickers import Tickers
+    requestBuilder =  Ec2RequestBuilder()
+    start_date = datetime.datetime.utcnow()+datetime.timedelta(hours=11)
+    rq = requestBuilder.buildFindInBetweenRequest('BTC-USD',start_date,(1,1))
+    print(rq)
 

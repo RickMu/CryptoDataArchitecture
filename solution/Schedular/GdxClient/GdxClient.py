@@ -23,7 +23,7 @@ class GdxClient(Thread, IClient):
         IClient.__init__(listener)
         self._cb_before = None
         self._requestBuilder = GdxApiBuilder()
-        self._processor = GdxProcessor()
+        self._dataTransformer = GdxDataTransformer()
 
     def run(self):
         self.fetchData()
@@ -39,17 +39,18 @@ class GdxClient(Thread, IClient):
 
     def __mapTicker(self,ticker):
         return GdxTickersMap.GdxTickers[ticker]
-
-    def fetchData(self, ticker):
-        ticker = self.__mapTicker(ticker)
-        request = self.__buildRequest(ticker)
-
+    def __parseResponse(self,request):
         with urllib.request.urlopen(request, timeout=20) as response:
             #loads the next identifier that is needed to make the request
             self._cb_before = response.headers[GdxClient.PAGINATION_KEY]
             data = json.load(response)
-        self._listener.callback(data)
-        return
+            return data
+    def fetchData(self, ticker):
+        ticker = self.__mapTicker(ticker)
+        request = self.__buildRequest(ticker)
+        data = self.__parseRequest(request)
+        dataframe = self._dataTransformer.mapInputToRequiredOutput(data)
+        self._listener.callback(dataframe)
 
 if __name__ == '__main__':
 
