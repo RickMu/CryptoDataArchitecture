@@ -35,8 +35,7 @@ class ComputedAndDataMediator(Mediator):
             rqData = pd.DataFrame()
             for c in rqCols:
                 rqData[c] = self.__dataset.readTail(c,rqDataSize)
-            
-            
+
             #might wish to do an async
             p = Thread(target= o.onDataChange, args= (rqData, updatedLength))
             p.start()

@@ -21,3 +21,4 @@ class OriginalColumn(Enum):
     VOLUME = 1<<3
     BUY_VOL = 1<<4
     SELL_VOL =  1<<5
+    INDEX = 1<<6

@@ -1,12 +1,10 @@
-import sys
-sys.path.append("B:\\MyGit\\CryptoCoin\\solution")
+
 import unittest
 from ColumnRules.ColumnRule import ColumnRule
 from Repository.DataSet import DataSet
 from Mediator.Mediator import ComputedAndDataMediator
 from DataProcessor.DataProcessor import DataProcessor
 from Operators.Operator import OperatorType
-import pandas as pd
 from DataObject.ComputedColumns import OriginalColumn, ComputedColumn
 
 class LogicTests(unittest.TestCase):
@@ -58,8 +56,10 @@ class LogicTests(unittest.TestCase):
 
         sut = ColumnRule([MomentumAvgP1],OperatorType.STOK,20)
         self.assertEqual(sut.getRequiredColumns(),  [MomentumAvgP1]  )
+
 if __name__ == "__main__":
-    unittest.main()
+    import pandas as pd
+    #unittest.main()
     
 
 

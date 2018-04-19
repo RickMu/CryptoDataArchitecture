@@ -5,7 +5,6 @@ class OnDataChangeListener:
     @abstractmethod
     def onDataChange(self,additionalData):
         return
-      
 
 class DataObject(OnDataChangeListener):
     

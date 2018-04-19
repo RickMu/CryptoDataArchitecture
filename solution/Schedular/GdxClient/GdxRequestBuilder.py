@@ -1,6 +1,5 @@
 import urllib.request
 import json
-
 from solution.Schedular.IClient.IApiBuilder import IApiBuilder
 from solution.Schedular import ApiEndPoints
 class GdxApiBuilder(IApiBuilder):
@@ -60,13 +59,4 @@ class GdxApiBuilder(IApiBuilder):
 
 
 if __name__ == "__main__":
-    builder = GdxApiBuilder()
-    rq1= builder.builFetchRequest('BTC-USD')
-    rq2= builder.builFetchRequestGivenId('BitCOIN',12321)
-    print(rq1)
-    print(rq2)
-
-    with urllib.request.urlopen(rq1, timeout=20) as response:
-        print(response.headers['cb-before'])
-
-        data = json.load(response)
+    import pandas as pd

@@ -20,8 +20,6 @@ class SystemTest (TestCase):
         self.df = pd.read_csv(self.filepath)
         self.df.set_index('time')
 
-        
-
     def test_system_on_ComputeDataObject(self):
         mediator = ComputedAndDataMediator()
         dataProcessor = DataProcessor()
