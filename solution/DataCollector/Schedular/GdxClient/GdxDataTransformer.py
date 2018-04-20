@@ -1,6 +1,6 @@
-from solution.Schedular.IClient.IDataTransformer import  ITransformer
+from solution.DataCollector.Schedular.IClient.IDataTransformer import  ITransformer
 import pandas as pd
-from solution.Schedular.InputColumn import InputColumns
+from solution.DataCollector.Schedular.InputColumn import InputColumns
 from collections import defaultdict
 
 class GdxColumns:
@@ -18,6 +18,8 @@ class GdxDataTransformer(ITransformer):
 
     def mapInputToRequiredOutput(self,data):
         #CoinBase Api returns data in json format
+        if not data:
+            return None
         df = pd.DataFrame(data)
         self.__matchToInputEnum(df)
         df = self.__setTimeAsIndex(df)
@@ -31,7 +33,7 @@ class GdxDataTransformer(ITransformer):
         df[InputColumns.TIME] = df[GdxColumns.TIME]
 
     def __setTimeAsIndex(self,df):
-        df = df.set_index(GdxColumns.TIME)
+        df = df.set_index(InputColumns.TIME)
         return df
 
     def __dropUnusedKeys(self,df):

@@ -1,8 +1,7 @@
-from solution.Schedular.Tickers import Tickers
-from solution.Schedular.GdxClient.GdxRequestBuilder import GdxApiBuilder
-from threading import Thread
-from solution.Schedular.IClient.IClient import IClient
-from solution.Schedular.GdxClient.GdxDataTransformer import GdxDataTransformer
+from solution.DataCollector.Schedular.Tickers import Tickers
+from solution.DataCollector.Schedular.GdxClient.GdxRequestBuilder import GdxApiBuilder
+from solution.DataCollector.Schedular.IClient.IClient import IClient
+from solution.DataCollector.Schedular.GdxClient.GdxDataTransformer import GdxDataTransformer
 import urllib.request
 import json
 
@@ -15,26 +14,29 @@ class GdxTickersMap:
     }
 
 
-class GdxClient(Thread, IClient):
+class GdxClient(IClient):
     PAGINATION_KEY = 'cb-before'
 
-    def __init__(self, listener):
-        Thread.__init__(self)
-        IClient.__init__(listener)
+    def __init__(self):
         self._cb_before = None
         self._requestBuilder = GdxApiBuilder()
         self._dataTransformer = GdxDataTransformer()
+        self._ticker = None
+
+    def setRequestConditions(self, ticker,timeSpan = None):
+        self._ticker = ticker
 
     def run(self):
-        self.fetchData()
+        self.fetchData(self._ticker)
 
     def __buildRequest(self,ticker):
         #if there is no trade identifier then just send a casual request
         rq = None
         if self._cb_before is None:
-            rq = self._requestBuilder.builFetchRequest(ticker)
+            rq = self._requestBuilder.builFetchRequest(ticker,timeSpan = None)
         else:
             rq = self._requestBuilder.builFetchRequestGivenId(ticker, self._cb_before)
+        print(rq)
         return rq
 
     def __mapTicker(self,ticker):
@@ -45,29 +47,19 @@ class GdxClient(Thread, IClient):
             self._cb_before = response.headers[GdxClient.PAGINATION_KEY]
             data = json.load(response)
             return data
-    def fetchData(self, ticker):
+
+    def fetchData(self, ticker, timeSpan= None):
         ticker = self.__mapTicker(ticker)
         request = self.__buildRequest(ticker)
-        data = self.__parseRequest(request)
+        data = self.__parseResponse(request)
         dataframe = self._dataTransformer.mapInputToRequiredOutput(data)
-        self._listener.callback(dataframe)
+        self._returnedData = dataframe
 
 if __name__ == '__main__':
 
-    import pandas as pd
-    builder = GdxApiBuilder()
-    rq1 = builder.builFetchRequest('BTC-USD')
-    rq2 = builder.builFetchRequestGivenId('BitCOIN', 12321)
-    print(rq1)
-    print(rq2)
-
-    with urllib.request.urlopen(rq1, timeout=20) as response:
-        print(response.headers['cb-before'])
-
-        data = json.load(response)
-        df = pd.DataFrame(data)
-
-        transformer = GdxDataTransformer()
-        df = transformer.mapInputToRequiredOutput(data)
-
-        print(df)
+    gdxClient = GdxClient()
+    gdxClient.setRequestConditions(Tickers.BITCOIN)
+    gdxClient.run()
+    print(gdxClient.getReturnedData())
+    gdxClient.run()
+    print(gdxClient.getReturnedData())

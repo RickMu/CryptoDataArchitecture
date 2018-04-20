@@ -1,7 +1,7 @@
 import urllib.request
 import json
-from solution.Schedular.IClient.IApiBuilder import IApiBuilder
-from solution.Schedular import ApiEndPoints
+from solution.DataCollector.Schedular.IClient.IApiBuilder import IApiBuilder
+from solution.DataCollector.Schedular import ApiEndPoints
 class GdxApiBuilder(IApiBuilder):
     class Services:
         TRADES = 'trades'
@@ -51,7 +51,7 @@ class GdxApiBuilder(IApiBuilder):
             .PARAMS().before(id).getRequest()
         return request
 
-    def builFetchRequest(self,ticker):
+    def builFetchRequest(self,ticker,timeSpan= None):
         request = self.currency(ticker).service(GdxApiBuilder.Services.TRADES) \
             .getRequest()
         return request

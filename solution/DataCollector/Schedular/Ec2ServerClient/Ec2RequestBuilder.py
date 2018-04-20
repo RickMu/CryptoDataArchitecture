@@ -1,10 +1,6 @@
-import urllib.request
-import json
-from enum import Enum
 
-from solution.Schedular.IClient.IApiBuilder import IApiBuilder
 import datetime
-from solution.Schedular import ApiEndPoints
+from solution.DataCollector.Schedular import ApiEndPoints
 class Ec2RequestBuilder:
 
     class Services:
@@ -62,18 +58,7 @@ class Ec2RequestBuilder:
         self._cachedRequest += ("market=" + str(market))
         return self
 
-    def buildFindAllRequest(self, market):
-
-        self.Service(Ec2RequestBuilder.Service.FindAll)
-        self.Query()
-        if (market is None):
-            raise Exception("Market cannot be None")
-        else:
-            self.Market(market)
-
-        return self.getRequest()
-
-    def buildFindInBetweenRequest(self, ticker, start_datetime, timespan):
+    def __buildFindInBetweenRequest(self, ticker, start_datetime, timespan):
 
         self.Service(Ec2RequestBuilder.Services.FindInBetween)
         self.Query()
@@ -83,7 +68,7 @@ class Ec2RequestBuilder:
         self.AND()
         self.Market(ticker)
 
-        dateInString = self.dateTimeToString(start_datetime)
+        dateInString = self.__dateTimeToString(start_datetime)
         self.AND()
         self.Date(dateInString)
         self.AND()
@@ -93,15 +78,22 @@ class Ec2RequestBuilder:
 
         return self.getRequest()
 
-    def dateTimeToString(self,date):
+    def __dateTimeToString(self,date):
         format =  '%Y-%m-%dT%H:%M'
         d = datetime.datetime.strftime(date,format)
         return d
+
+    def buildFetchRequest(self,ticker, timespan= None):
+        if timespan is None:
+            raise Exception("TimeSpan for EC2 shouldn't be none")
+        serverTime = datetime.datetime.utcnow()+datetime.timedelta(hours=11)
+        rq = self.__buildFindInBetweenRequest(ticker, serverTime, timespan)
+        return rq
 
 if __name__ == "__main__":
     from solution.Schedular.Tickers import Tickers
     requestBuilder =  Ec2RequestBuilder()
     start_date = datetime.datetime.utcnow()+datetime.timedelta(hours=11)
-    rq = requestBuilder.buildFindInBetweenRequest('BTC-USD',start_date,(1,1))
+    rq = requestBuilder.buildFetchRequest('BTC-USD',(1,1))
     print(rq)
 
