@@ -66,8 +66,6 @@ class OperatorType(Enum):
     MULTIPLY = 64
 
 class OperatorLookUp:
-
-
     def __init__(self):
 
         self.__table={
@@ -91,7 +89,6 @@ class OperatorLookUp:
     def GetOperator(operatorType):
         if OperatorLookUp.Singleton is None:
             OperatorLookUp.Singleton = OperatorLookUp()
-        
         return OperatorLookUp.Singleton.getOperator(operatorType)
         
 

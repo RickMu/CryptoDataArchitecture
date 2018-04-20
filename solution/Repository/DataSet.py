@@ -73,8 +73,5 @@ class DataSet:
         self.__computedLock[key].acquire()
         
         self.__computedDF[key] = self.__computedDF[key].append(additionalData,ignore_index = True)
-      
         self.__mediator.send(key, additionalData.shape[0])
-        
         self.__computedLock[key].release()
-    
