@@ -19,7 +19,7 @@ class Ec2DataTransformer(ITransformer):
 
     def mapInputToRequiredOutput(self,data):
         #EC2 Api returns data in json format
-        df = pd.DataFrame(data)
+        df = pd.DataFrame(data,dtype=float)
         self.__matchToInputEnum(df)
         df = self.__setTimeAsIndex(df)
         self.__calcBuySellVolData(df)

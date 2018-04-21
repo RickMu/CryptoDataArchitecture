@@ -44,14 +44,19 @@ class GdxClient(IClient):
     def __parseResponse(self,request):
         with urllib.request.urlopen(request, timeout=20) as response:
             #loads the next identifier that is needed to make the request
-            self._cb_before = response.headers[GdxClient.PAGINATION_KEY]
             data = json.load(response)
+            if data != []:
+                self._cb_before = response.headers[GdxClient.PAGINATION_KEY]
             return data
 
     def fetchData(self, ticker, timeSpan= None):
         ticker = self.__mapTicker(ticker)
         request = self.__buildRequest(ticker)
         data = self.__parseResponse(request)
+        print(data)
+        if data == []:
+            self._returnedData= None
+            return
         dataframe = self._dataTransformer.mapInputToRequiredOutput(data)
         self._returnedData = dataframe
 

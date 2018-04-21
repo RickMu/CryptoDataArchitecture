@@ -24,13 +24,15 @@ class Schedular(Thread):
     def run(self):
         self.EC2Client.run()
         data = self.EC2Client.getReturnedData()
+
         self._dataQueue.put(data)
         self._getRealTimeData()
     def _getRealTimeData(self):
         while True:
             self.GdxClient.run()
             data = self.GdxClient.getReturnedData()
-            self._dataQueue.put(data)
+            if data is not None:
+                self._dataQueue.put(data)
             time.sleep(5)
 
 
