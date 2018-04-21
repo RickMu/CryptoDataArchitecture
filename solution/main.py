@@ -9,7 +9,7 @@ if __name__ == "__main__":
     processor = DataProcessor()
     mediator = ComputedAndDataMediator()
     dataSet = DataSet(processor,mediator)
-    
+
     sch = Schedular()
     sch.setRequestConditions(Tickers.BITCOIN,(0,1))
     worker = Worker(consumer = dataSet, schedular=sch)
