@@ -36,7 +36,6 @@ class DataProcessor:
                                              InputColumns.BUY_VOL:'sum',InputColumns.SELL_VOL: 'sum'})
         print("*********************************Input Data********************************")
         print(data.shape[0])
-        print(data)
         data = self.re_create(data)
         return data
 
