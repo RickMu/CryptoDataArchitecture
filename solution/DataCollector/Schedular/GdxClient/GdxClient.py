@@ -53,7 +53,6 @@ class GdxClient(IClient):
         ticker = self.__mapTicker(ticker)
         request = self.__buildRequest(ticker)
         data = self.__parseResponse(request)
-        print(data)
         if data == []:
             self._returnedData= None
             return

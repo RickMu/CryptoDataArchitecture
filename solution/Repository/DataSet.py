@@ -37,11 +37,12 @@ class DataSet(Consumer):
         super()._toggleState()
 
         data = self.__dataProcessor.process(additionalData)
-        print(data)
         self.__originalDF = self.__originalDF.append(data)
         self.__mediator.send('Original', data.shape[0])
 
-        print(self.__originalDF)
+        print("******************This is in dataset**********************")
+        print(self.__originalDF.shape[0])
+
         super()._toggleState()
         self.__datalock.release()
     #method should be retired

@@ -10,11 +10,21 @@ class DataProcessor:
     #Gets the last minute data, 
     #and returns all data before the last minute for correct aggregation
     def __preProcessData(self, datasource):
-        datasource.sort_index()
-        lastestedTime= datasource.tail(1).index.values[0]
+        datasource.sort_index(inplace=True)
+        index = datasource.index.values
+        earliestTime = index[0]
+        latestedTime= index[-1]
+
+        if earliestTime> latestedTime:
+            raise Exception("earliest time %s , is greater than latest time %s" % (earliestTime,latestedTime))
+        print(latestedTime)
         datasource = self.__cachedData.append(datasource)
-        data = datasource[datasource.index < lastestedTime]
-        self.__cachedData = datasource[datasource.index >= lastestedTime]
+        datasource.sort_index(inplace=True)
+        data = datasource[datasource.index < latestedTime]
+        self.__cachedData = datasource[datasource.index >= latestedTime]
+
+        print("*********************************Cached Data********************************")
+        print(self.__cachedData.shape[0])
         return data
     
     def getCachedData(self):
@@ -24,8 +34,10 @@ class DataProcessor:
         data = self.__preProcessData(datasource)
         data = data.groupby(data.index).agg({InputColumns.PRICE:['min', 'max','mean'], InputColumns.VOLUME:'sum',
                                              InputColumns.BUY_VOL:'sum',InputColumns.SELL_VOL: 'sum'})
-        data = self.re_create(data)
+        print("*********************************Input Data********************************")
+        print(data.shape[0])
         print(data)
+        data = self.re_create(data)
         return data
 
     #Having problem with multi-level indexing in Pandas after aggregation, Don't really understand what it is meant to do
