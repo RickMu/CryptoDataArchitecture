@@ -52,12 +52,22 @@ class EC2Client( IClient):
         request = self._requestBuilder.buildFetchRequest(ticker, timeSpan)
         print(request)
         data = self.__requestEndPoint(request)
+        if data == []:
+            self._returnedData = None
+            return
+
         dataframe = self._dataTransformer.mapInputToRequiredOutput(data)
         self._returnedData = dataframe
 
 
 if __name__ == '__main__':
+    from solution.DataCollector.Schedular.InputColumn import InputColumns
     client = EC2Client()
     client.setRequestConditions(Tickers.BITCOIN, (0, 1))
     client.run()
-    print(client.getReturnedData())
+    df = client.getReturnedData()
+    df.sort_index(inplace= True)
+    print(df)
+
+    df.groupby(df.index)\
+        .agg({InputColumns.PRICE: ['min', 'max', 'mean'], InputColumns.VOLUME: 'sum'})

@@ -1,13 +1,15 @@
 import pandas as pd
 from threading import Lock, Thread
 from collections import defaultdict
+from solution.DataCollector.Worker.WorkableState import Consumer
 
 
-class DataSet:
+class DataSet(Consumer):
     
     def __init__(self, processor, mediator):
-        self.__originalDF = pd.DataFrame()
-        self.__uncompressedDF = pd.DataFrame()
+        Consumer.__init__(self)
+        self.__originalDF = pd.DataFrame(dtype=float)
+        self.__uncompressedDF = pd.DataFrame(dtype=float)
         self.__computedDF = defaultdict(pd.Series)
         self.__computedLock = defaultdict(Lock)
         self.__datalock = Lock()
@@ -16,6 +18,7 @@ class DataSet:
         self.__dataProcessor = processor
         self.__mediator = mediator
         self.__mediator.setDataSet(self)
+        super()._toggleState()
         
     def getSize(self):
         return self.__originalDF.shape[0]
@@ -25,17 +28,22 @@ class DataSet:
     
     def getComputedKeys(self):
         return self.__computedDF.keys()
-        
+
+    def consume(self,data):
+        self.updateOriginal(data)
+
     def updateOriginal(self,additionalData):
-        self.__datalock.acquire()    
-        
+        self.__datalock.acquire()
+        super()._toggleState()
+
         data = self.__dataProcessor.process(additionalData)
-        
         self.__originalDF = self.__originalDF.append(data)
+        self.__mediator.send('Original', data.shape[0])
+
+        print("******************This is in dataset**********************")
         print(self.__originalDF.shape[0])
 
-        self.__mediator.send('Original', data.shape[0])
-        
+        super()._toggleState()
         self.__datalock.release()
     #method should be retired
     def getAllData(self):
@@ -60,8 +68,6 @@ class DataSet:
             if start <0:
                 start = 0
             data = data[start:]
-
-            
         return data
         
     def registerComputedColumn(self, computedColumnName):
@@ -71,7 +77,7 @@ class DataSet:
     def updateComputedColumns(self,key,additionalData):
         
         self.__computedLock[key].acquire()
-        
         self.__computedDF[key] = self.__computedDF[key].append(additionalData,ignore_index = True)
         self.__mediator.send(key, additionalData.shape[0])
         self.__computedLock[key].release()
+

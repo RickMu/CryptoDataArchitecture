@@ -1,27 +1,33 @@
 from abc import abstractmethod
 from solution.DataCollector.Schedular.Tickers import Tickers
+from threading import Thread
 import time
 class IWorker:
 
-    def __init__(self,dataset):
+    def __init__(self,consumer):
         #datasource to feed collected data into
-        self.dataset = dataset
+        self._consumer = consumer
 
     @abstractmethod
     def collectData(self):
         return
 
-class Worker(IWorker):
+class Worker(IWorker, Thread):
 
-    def __init__(self,dataset,schedular):
-        IWorker.__init__(self,dataset)
+    def __init__(self,consumer,schedular):
+        Thread.__init__(self)
+        IWorker.__init__(self,consumer)
         self.schedular = schedular
+
+    def run(self):
+        self.collectData()
 
     def collectData(self):
         while True:
-            data = self.schedular.getData()
-            if data is not None:
-                print(data)
+            if self._consumer.isReadyToConsume():
+                data = self.schedular.getData()
+                if data is not None:
+                    self._consumer.consume(data)
             time.sleep(5)
 
 if __name__ == '__main__':
@@ -29,6 +35,5 @@ if __name__ == '__main__':
     sch = Schedular()
     sch.setRequestConditions(Tickers.BITCOIN,(0,1))
     sch.start()
-
     worker = Worker(None,sch)
     worker.collectData()
