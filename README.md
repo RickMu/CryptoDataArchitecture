@@ -9,10 +9,11 @@
 - Integration tests with computed columns
 - Data Visualisation
 
-## Design Plan and Changed Plan
+## Design Plan and Updated Plan
 Both png contains most of the designs.
-Changed Plan consists some refactoring and design plans to do this sprint:
+Updated Plan consists some refactoring and design plans to do this sprint:
 - Refactor Rule and DataObject
+- Making Computed Columns independent from dataset, logic around notify updates and eventually respond back is a mess
 - Visual tool should talk to the system only through dataobjects.
 
 ## Plans:
