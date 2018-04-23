@@ -35,9 +35,9 @@ class SystemTest (TestCase):
         sut3 = ComputedDataObject((ComputedColumn.MOMENTUM_SUM,20),ds,rule3,mediator)
         #print(sut.getRequiredColumns())
 
-        ds.updateOriginal(self.df)
+        ds.updateColumns(self.df)
         
-        ds.updateOriginal(self.df)
+        ds.updateColumns(self.df)
 
         cpCol = ds.read(sut.getName())
         col = sut.getData()

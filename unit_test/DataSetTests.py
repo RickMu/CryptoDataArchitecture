@@ -1,13 +1,12 @@
 import sys
 sys.path.append("B:\\MyGit\\CryptoCoin\\solution")
-from solution.Repository.DataSet import DataSet
+from solution.Repository.OriginalDataSet.DataSet import DataSet
 from solution.DataProcessor.DataProcessor import DataProcessor
 from solution.Mediator.Mediator import ComputedAndDataMediator
 import pandas as pd
 import unittest
 from unittest import TestCase
 from unittest.mock import MagicMock
-from unittest.mock import patch
 
 
 class DataSetUnitTests(TestCase):
@@ -28,7 +27,7 @@ class DataSetUnitTests(TestCase):
         self.sut.consume(self.df)
 
         self.assertEqual(self.sut.getSize(), self.df.shape[0])
-        for x,y in zip(self.sut.getOriginalKeys(), self.df.keys()):
+        for x,y in zip(self.sut.getColumnNames(), self.df.keys()):
             self.assertEqual(x,y)
 
         mock_mediator_send.assert_called_once()
