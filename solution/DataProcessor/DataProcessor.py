@@ -43,13 +43,13 @@ class DataProcessor:
     #for now just recreate another dataframe
     def re_create(self, data):
         df = pd.DataFrame(dtype= float)
-        df[OriginalColumn.PRICE_MAX] = data[InputColumns.PRICE]['max'].values
-        df[OriginalColumn.PRICE_MIN] = data[InputColumns.PRICE]['min'].values
-        df[OriginalColumn.PRICE_MEAN] = data[InputColumns.PRICE]['mean'].values
-        df[OriginalColumn.VOLUME] = data[InputColumns.VOLUME]['sum'].values
-        df[OriginalColumn.BUY_VOL] = data[InputColumns.BUY_VOL]['sum'].values
-        df[OriginalColumn.SELL_VOL] = data[InputColumns.SELL_VOL]['sum'].values
+        df[str(OriginalColumn.PRICE_MAX)] = data[InputColumns.PRICE]['max'].values
+        df[str(OriginalColumn.PRICE_MIN)] = data[InputColumns.PRICE]['min'].values
+        df[str(OriginalColumn.PRICE_MEAN)] = data[InputColumns.PRICE]['mean'].values
+        df[str(OriginalColumn.VOLUME)] = data[InputColumns.VOLUME]['sum'].values
+        df[str(OriginalColumn.BUY_VOL)] = data[InputColumns.BUY_VOL]['sum'].values
+        df[str(OriginalColumn.SELL_VOL)] = data[InputColumns.SELL_VOL]['sum'].values
         df.index = data.index.values
-        df.index.name = OriginalColumn.TIME
+        df.index.name = str(OriginalColumn.TIME)
         return df
         

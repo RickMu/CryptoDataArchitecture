@@ -2,10 +2,8 @@ from abc import abstractmethod
 
 
 class IDataSet:
-
-
     @abstractmethod
-    def read(self,key):
+    def getColumn(self,name):
         return
 
     @abstractmethod
@@ -21,13 +19,9 @@ class IDataSet:
         return
 
     @abstractmethod
-    def readAll(self):
-        return
-
-    @abstractmethod
     def addUpdateListener(self, listener):
         return
 
     @abstractmethod
-    def notify(self,updatedLength,key):
+    def notify(self,updatedLength):
         return

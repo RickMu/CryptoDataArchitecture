@@ -16,9 +16,6 @@ class DataSet(Consumer,IDataSet):
         
     def getSize(self):
         return self.__originalDF.shape[0]
-    
-    def getColumnNames(self):
-        return self.__originalDF.keys()
 
     def consume(self,data):
         self.updateColumns(data)
@@ -34,7 +31,7 @@ class DataSet(Consumer,IDataSet):
 
         data = self.__dataProcessor.process(data)
         self.__originalDF = self.__originalDF.append(data)
-        self.notify(data.shape[0],DataSet.SINGLE_KEY)
+        self.notify(data.shape[0])
 
         print("******************This is in dataset**********************")
         print(self.__originalDF.shape[0])
@@ -46,31 +43,13 @@ class DataSet(Consumer,IDataSet):
     def addUpdateListener(self,listener):
         self.__listener = listener
 
-    def notify(self,updatedlength,key):
+    def notify(self,updatedlength):
         if self.__listener is None:
             return
-        self.__listener.notify(updatedlength,key)
+        self.__listener.notify(updatedlength)
 
-    #This returns a pd.DataFrame
-    def readAll(self):
-        return self.__originalDF
+    def getColumn(self, name):
+        return self.__originalDF[name]
 
-    #This returns a pd.Series
-    def read(self,key):
-        key = str(key)
-        return self.readTail(key)
-        # log it or print?
-    
-    def readTail(self,key, count = None):
-        data= None
-        key = str(key)
-        if key in self.__originalDF.keys():
-            data = self.__originalDF[key].values
-        if data is None:
-            raise Exception("No specified key in %s" % (self.__originalDF.keys()))
-       
-        if count is not None:
-            start = data.shape[0]-count
-            data = data[start:]
-        return data
-
+    def getColumnNames(self):
+        return self.__originalDF.keys()
