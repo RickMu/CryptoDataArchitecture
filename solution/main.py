@@ -34,6 +34,8 @@ if __name__ == "__main__":
     Flow:
     Worker delivers data to DataSet 1, indicators that work with these data go into DataSet 2 and indicators that work
     with other indicators in DataSet 2 go into DataSet3 etc.
+    
+    DataSetController, just puts everything together to achieve the above flow
     '''
     processor = DataProcessor()
     dataSet = DataSet(processor)
