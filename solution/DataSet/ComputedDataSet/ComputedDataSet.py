@@ -1,4 +1,4 @@
-from solution.Repository.IDataSet.IDataSet import IDataSet
+from solution.DataSet.IDataSet.IDataSet import IDataSet
 import pandas as pd
 from collections import defaultdict
 from threading import Lock

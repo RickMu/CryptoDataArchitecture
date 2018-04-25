@@ -2,15 +2,14 @@ import pandas as pd
 from threading import Lock, Thread
 from collections import defaultdict
 from solution.DataCollector.Worker.WorkableState import Consumer
-from solution.Repository.IDataSet.IDataSet import IDataSet
+from solution.DataSet.IDataSet.IDataUpdateListener import IDataUpdateSubject
 
-class DataSet(Consumer,IDataSet):
-    SINGLE_KEY = "ORIGINAL"
+class DataSet(Consumer,IDataUpdateSubject):
     def __init__(self, processor):
         Consumer.__init__(self)
         self.__originalDF = pd.DataFrame(dtype=float)
         self.__datalock = Lock()
-        self.__listener = None
+        self.__listeners = []
         self.__dataProcessor = processor
         super()._toggleState()
         
@@ -43,10 +42,12 @@ class DataSet(Consumer,IDataSet):
     def addUpdateListener(self,listener):
         self.__listener = listener
 
+    def addListeners(self, listener):
+        self.__listeners.append(listener)
+
     def notify(self,updatedlength):
-        if self.__listener is None:
-            return
-        self.__listener.notify(updatedlength)
+        for listener in self.__listeners:
+            listener.onDataUpdate(updatedlength)
 
     def getColumn(self, name):
         return self.__originalDF[name]

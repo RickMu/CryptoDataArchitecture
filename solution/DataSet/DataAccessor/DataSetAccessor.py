@@ -1,4 +1,4 @@
-from solution.Repository.DataAccessor.IDataAccessor import IDataAccessor
+from solution.DataSet.DataAccessor.IDataAccessor import IDataAccessor
 class DataSetAccessor(IDataAccessor):
 
     def __init__(self,dataset):

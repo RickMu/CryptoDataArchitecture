@@ -1,7 +1,7 @@
 import sys
 sys.path.append("B:\\MyGit\\CryptoCoin\\solution")
 from solution.Repository.OriginalDataSet.DataSet import DataSet
-from solution.DataProcessor.DataProcessor import DataProcessor
+from solution.DatSet.DataProcessor import DataProcessor
 from solution.Mediator.Mediator import ComputedAndDataMediator
 import pandas as pd
 import unittest
