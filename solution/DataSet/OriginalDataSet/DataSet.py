@@ -2,7 +2,7 @@ import pandas as pd
 from threading import Lock, Thread
 from collections import defaultdict
 from solution.DataCollector.Worker.WorkableState import Consumer
-from solution.DataSet.IDataSet.IDataUpdateListener import IDataUpdateSubject
+from solution.DataSet.IDataSet.IDataUpdateContracts import IDataUpdateSubject
 
 class DataSet(Consumer,IDataUpdateSubject):
     def __init__(self, processor):

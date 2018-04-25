@@ -1,4 +1,4 @@
-from solution.DataSet.IDataSet.IDataUpdateListener import IDataUpdateHandler
+from solution.DataSet.IDataSet.IDataUpdateContracts import IDataUpdateHandler
 from collections import defaultdict
 import pandas as pd
 from threading import Thread

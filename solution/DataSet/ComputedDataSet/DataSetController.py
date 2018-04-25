@@ -1,4 +1,4 @@
-from solution.DataSet.IDataSet.IDataUpdateListener import IDataUpdateListener,IDataUpdateSubject
+from solution.DataSet.IDataSet.IDataUpdateContracts import IDataUpdateListener,IDataUpdateSubject
 '''
 Not Cleanly designed:
 Rule Set handles two responsibilities: Creation of rules and, also act as an updater
