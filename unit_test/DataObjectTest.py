@@ -22,7 +22,7 @@ class DataObjectTests(unittest.TestCase):
         self.mediator = ComputedAndDataMediator()
         self.dataProcessor = DataProcessor()
         self.ds = DataSet(self.dataProcessor, self.mediator)
-        self.ds.updateOriginal(self.df)
+        self.ds.updateColumns(self.df)
         return
     
     def test_DataObject_GetNameMethods(self):
