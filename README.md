@@ -5,9 +5,13 @@
 - Done Integration with DataSet Class
 - ~~Integration tests with computed columns~~
 ## Sprint02 [Ends at 29/04]
-- Refactor ComputedDataObject and Rule relationship
-- Integration tests with computed columns
-- Data Visualisation
+### TO-DO
+- ~~factor ComputedDataObject and Rule relationship~~
+- ~~Integration tests with computed columns~~
+- ~~Data Visualisation~~
+### Problems Discovered
+- Integration between visual tool and DataSet feels a little rushed, might want to go over again
+- Current Behaviour is： new data is only pulled in, when all dataset updates are done, maybe able to have it not care about all dataset finishing
 
 ## Design Plan and Updated Plan
 Both png contains most of the designs.
