@@ -1,4 +1,4 @@
-from solution.DataSet.IDataSet.IDataUpdateContracts import IDataUpdateListener,IDataUpdateSubject
+from solution.Contracts.IDataUpdateContracts import IDataUpdateListener,IDataUpdateSubject
 '''
 Not Cleanly designed:
 Rule Set handles two responsibilities: Creation of rules and, also act as an updater
@@ -14,13 +14,13 @@ class DataSetController(IDataUpdateListener,IDataUpdateSubject):
 
     def addListeners(self,listener):
         self._listener.append(listener)
-    def notify(self, updatedLength):
+    def notify(self, event):
         for listener in self._listener:
-            listener.onDataUpdate(updatedLength)
+            listener.onDataUpdate(event)
 
-    def onDataUpdate(self,updatedLength):
-        self._dataUpdateHandler.updateDataSet(updatedLength,self._indicators)
-        self.notify(updatedLength)
+    def onDataUpdate(self, event):
+        self._dataUpdateHandler.updateDataSet(event, self._indicators)
+        self.notify(event)
 
     def initialize(self, configs):
         indicators = self._factory.create(configs)

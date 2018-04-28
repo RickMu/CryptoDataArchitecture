@@ -5,8 +5,8 @@ class DataSetAccessor(IDataAccessor):
         IDataAccessor.__init__(self,dataset)
 
     def read(self, key, length, TailUp=True):
-        self.__checkColumnExists(key)
-        allData = self._dataset.getColumn(key)
+        self.__checkColumnExists(str(key))
+        allData = self._dataset.getColumn(str(key))
 
         if TailUp:
             startPos = allData.shape[0] - length
@@ -14,6 +14,9 @@ class DataSetAccessor(IDataAccessor):
                 startPos= 0
             allData = allData[startPos:]
         return allData
+
+    def getColumnNames(self):
+        return self._dataset.getColumnNames()
 
     def __checkColumnExists(self, name):
         allNames = self._dataset.getColumnNames()

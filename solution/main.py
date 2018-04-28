@@ -1,7 +1,9 @@
-from solution.DataCollector.Worker.IWorker import Worker
+
+from pyqtgraph.Qt import QtCore,QtGui
+import pyqtgraph as pg
+from solution.ConsumerProducerFrameWork.ConsumerProducer import Worker
 from solution.DataCollector.Schedular.Schedular import Schedular
 from solution.DataSet.OriginalDataSet.DataSet import DataSet
-from solution.DataSet.DataProcessor import DataProcessor
 from solution.DataCollector.Schedular.Tickers import Tickers
 from solution.DataObject.ComputedColumns import OriginalColumn
 from solution.DataSet.ComputedDataSet.ComputedDataSet import ComputedDataSet
@@ -12,8 +14,14 @@ from solution.DataSet.ComputedDataSet.TechnicalIndicatorsFactory import Technica
 from solution.Operators.Operator import OperatorType
 from solution.DataObject.ComputedColumns import ComputedColumn
 from solution.DataSet.DataProcessor.DataProcessor import DataProcessor
+from solution.VisualTools.DataCollector import GraphDataCollector
 
 
+from queue import Queue
+from solution.VisualTools.graph.customgraph import CustomGraph
+from solution.VisualTools.graph.App import PyQtWindowWrapper
+import time
+import sys
 def createRequiredComponents(subjectDataAccessor):
     dataset = ComputedDataSet()
     dataAccessor = DataSetAccessor(dataset)
@@ -37,9 +45,12 @@ if __name__ == "__main__":
     
     DataSetController, just puts everything together to achieve the above flow
     '''
+    accessors = []
+
     processor = DataProcessor()
     dataSet = DataSet(processor)
     accessor = DataSetAccessor(dataSet)
+    accessors.append(accessor)
 
     configs = [
         (ComputedColumn.VOL_SUM, [(OriginalColumn.VOLUME, "")], OperatorType.SUM, 20),
@@ -49,6 +60,7 @@ if __name__ == "__main__":
     c1,da1= createRequiredComponents(accessor)
     c1.initialize(configs)
     dataSet.addListeners(c1)
+    accessors.append(da1)
 
     configs = [
         (ComputedColumn.MOMENTUM_SUM, [(ComputedColumn.MOMENTUM, 20)], OperatorType.SUM, 20),
@@ -57,14 +69,30 @@ if __name__ == "__main__":
     c2, da2 = createRequiredComponents(da1)
     c2.initialize(configs)
     c1.addListeners(c2)
+    accessors.append(da2)
 
 
 
-    sch = Schedular()
+
+
+    queue = Queue()
+    sch = Schedular(queue)
     sch.setRequestConditions(Tickers.BITCOIN,(0,1))
-    worker = Worker(consumer = dataSet, schedular=sch)
+    worker = Worker(queue = queue,consumer = dataSet)
     worker.start()
     sch.start()
+
+
+    g1 = CustomGraph()
+    g1.addPlot(OriginalColumn.VOLUME)
+    #g1.onDataUpdate(accessor.read(OriginalColumn, 30))
+
+    app = PyQtWindowWrapper()
+    queue = Queue()
+    graphDataCollector = GraphDataCollector(queue, accessor)
+    graphDataWorker = Worker(queue=queue, consumer=app)
+
+    app.addGraph(g1)
 
 
 

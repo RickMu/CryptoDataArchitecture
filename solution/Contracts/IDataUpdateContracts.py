@@ -2,7 +2,7 @@ from abc import abstractmethod
 class IDataUpdateListener:
 
     @abstractmethod
-    def onDataUpdate(self,updatedLength):
+    def onDataUpdate(self, event):
         return
 
 class IDataUpdateSubject:
@@ -12,7 +12,7 @@ class IDataUpdateSubject:
         return
 
     @abstractmethod
-    def notify(self,updatedLength):
+    def notify(self, event):
         return
 
 class IDataUpdateHandler:
