@@ -16,6 +16,9 @@ class RuleBase:
         if len(tupleColumnRepresentation) != 2:
             raise Exception("A Tuple Column Representation should be in the form of (Enum, period), Given: %s"
                             % (tupleColumnRepresentation))
+        if tupleColumnRepresentation[1] == 0:
+            return str(tupleColumnRepresentation[0])
+
         return str(tupleColumnRepresentation[0]) + str(tupleColumnRepresentation[1])
 
     @abstractmethod

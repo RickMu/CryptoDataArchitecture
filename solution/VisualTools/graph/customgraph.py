@@ -13,12 +13,25 @@ class CustomGraph(DataUpdateListener):
         self.graph = pg.PlotItem( axisItems={'bottom': self._axis})
         self._plots = {}
         self._data = defaultdict(pd.Series)
+        self._tempFix_ZeroValues = {}
 
-    def addPlot(self,name):
+    #Similar to function inside ColumnRule
+    def _nameToIdentifier(self,tuples):
+        return str(tuples[0]) + str(tuples[1])
+
+    def addPlot(self,tuples):
+
+        name =  self._nameToIdentifier(tuples)
         self._plots[str(name)] = self.graph.plot()
 
-    def _parseDataToXY(self,key):
+        if tuples[1] == "":
+            self._tempFix_ZeroValues[str(name)] = 0
+        else:
+            self._tempFix_ZeroValues[str(name)] = tuples[1]
+        print("Truncate Length: "+str(self._tempFix_ZeroValues[str(name)]))
 
+    def _parseDataToXY(self,key):
+        startPos = self._tempFix_ZeroValues[key]
         format = "%Y-%m-%dT%H:%M"
         x = self._data[key].index.values
         x = [datetime.datetime.strptime(i[:16],format) for i in x]
@@ -28,10 +41,10 @@ class CustomGraph(DataUpdateListener):
         timeStamp = [int(time.mktime(i)) for i in t]
 
         xy = {
-            'x': timeStamp,
-            'y': list(self._data[key].values)
+            'x': timeStamp[startPos:],
+            'y': list(self._data[key].values)[startPos:]
         }
-        print(xy)
+
         return xy
 
     def plot(self):
@@ -43,7 +56,6 @@ class CustomGraph(DataUpdateListener):
     def onDataUpdate(self, data):
         for key in self._plots.keys():
             self._data[key] = self._data[key].append(data[key], ignore_index=False)
-            print(self._data[key])
         self.plot()
 
 '''

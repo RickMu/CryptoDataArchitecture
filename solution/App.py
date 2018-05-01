@@ -60,23 +60,54 @@ def createRequiredComponents(subjectDataAccessor):
     return dataSetController,dataAccessor
 
 if __name__ == "__main__":
+    '''
+       Note: All rows of data are minutely aggregated data 
+       Cached data are data that is not aggregated minutely yet, 
+       because the minute has not gone past, and so it's not sent to the dataset
+       what is printed on the commandline are row counts
+
+       DataSetSystem:
+       Each time config is added, a new dataset with those columns are created and it sits at the bottom of the
+       hierachy. Data obtained from worker notifies data handlers each dataset has from from top to bottom.
+
+       '''
+
+
+    DAY = 1440
+    HOURS_5 = 300
     system = DataSetSystem()
     system.initialize()
     system.addConfig(
         config= [
-            (ComputedColumn.VOL_SUM, [(OriginalColumn.VOLUME, "")], OperatorType.SUM, 20),
-            (ComputedColumn.MOMENTUM, [(OriginalColumn.PRICE_MEAN, "")], OperatorType.DIFF, 20),
-            (ComputedColumn.PRICE_AVG, [(OriginalColumn.PRICE_MEAN, "")], OperatorType.MOVAVG, 20)
+            (ComputedColumn.VOL_SUM, [(OriginalColumn.VOLUME, "")], OperatorType.SUM, DAY),
+            (ComputedColumn.MOMENTUM, [(OriginalColumn.PRICE_MEAN, "")], OperatorType.DIFF, HOURS_5),
+            (ComputedColumn.PRICE_AVG, [(OriginalColumn.PRICE_MEAN, "")], OperatorType.MOVAVG, HOURS_5),
+            (ComputedColumn.BUY_MINUS_SELL, [(OriginalColumn.BUY_VOL, ""),(OriginalColumn.SELL_VOL, "")], OperatorType.SUBTRACT,0),
+            (ComputedColumn.PRICE_STOK, [(OriginalColumn.PRICE_MEAN, "")
+                , (OriginalColumn.PRICE_MEAN, "")
+                , (OriginalColumn.PRICE_MEAN, "")], OperatorType.STOK, HOURS_5)
         ]
     ).addConfig(
         config=[
-            (ComputedColumn.MOMENTUM_SUM, [(ComputedColumn.MOMENTUM, 20)], OperatorType.SUM, 20),
-            (ComputedColumn.MOMENTUM_AVG, [(ComputedColumn.MOMENTUM, 20)], OperatorType.MOVAVG, 20)
+            (ComputedColumn.MOMENTUM_AVG, [(ComputedColumn.MOMENTUM, HOURS_5)], OperatorType.MOVAVG, HOURS_5),
+            (ComputedColumn.MOMENTUM_VOL, [(ComputedColumn.MOMENTUM, HOURS_5),(ComputedColumn.VOL_SUM,DAY)],OperatorType.MULTIPLY,0),
+            (ComputedColumn.WILLR_VOL, [
+                (ComputedColumn.VOL_SUM, DAY),
+                (ComputedColumn.VOL_SUM, DAY),
+                (ComputedColumn.VOL_SUM, DAY)], OperatorType.STOK, HOURS_5),
+            (ComputedColumn.BUY_MINUS_SELL_VOL_SUM,[(ComputedColumn.BUY_MINUS_SELL,"")],OperatorType.SUM,HOURS_5),
+
+        ]
+    ).addConfig(
+        config = [
+            (ComputedColumn.STOK_MOMENTUM_VOL, [(ComputedColumn.MOMENTUM_VOL, "")
+                                                ,(ComputedColumn.MOMENTUM_VOL, "")
+                                                ,(ComputedColumn.MOMENTUM_VOL, "")], OperatorType.STOK, HOURS_5),
         ]
     )
 
     schedular = SchedularController()
-    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(0, 1))
+    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(3, 1))
     schedular.setDataSetEntry(system.getHeadDataSetController())
     schedular.start()
 
@@ -88,12 +119,39 @@ if __name__ == "__main__":
     system.getTailDataSetController().addListeners(graphDataCollector)
     graphDataWorker.start()
 
+
     g1 = CustomGraph()
-    g1.addPlot(OriginalColumn.VOLUME)
+    g1.addPlot((ComputedColumn.PRICE_AVG,HOURS_5))
+    g1.addPlot((OriginalColumn.PRICE_MEAN,""))
+
+    g8 = CustomGraph()
+    g8.addPlot((ComputedColumn.PRICE_STOK,HOURS_5))
 
     g2 = CustomGraph()
-    g2.addPlot(OriginalColumn.PRICE_MAX)
-    g2.addPlot(OriginalColumn.PRICE_MEAN)
+    g2.addPlot((ComputedColumn.VOL_SUM, DAY))
+
+    g3 = CustomGraph()
+    g3.addPlot((ComputedColumn.BUY_MINUS_SELL_VOL_SUM,HOURS_5))
+
+    g4 = CustomGraph()
+    g4.addPlot((ComputedColumn.WILLR_VOL,HOURS_5))
+
+    g5 = CustomGraph()
+    g5.addPlot((ComputedColumn.MOMENTUM_AVG,HOURS_5))
+
+    g6 = CustomGraph()
+    g6.addPlot((ComputedColumn.MOMENTUM_VOL,""))
+
+    g7 = CustomGraph()
+    g7.addPlot((ComputedColumn.STOK_MOMENTUM_VOL,HOURS_5))
+
     app.addGraph(g1)
+    app.addGraph(g8)
     app.addGraph(g2)
+    app.addGraph(g3)
+    app.addGraph(g4)
+    app.addGraph(g5)
+    app.addGraph(g6)
+    app.addGraph(g7)
+
     app.start()

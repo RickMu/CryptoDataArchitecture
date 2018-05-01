@@ -19,7 +19,7 @@ from solution.VisualTools.DataCollector import GraphDataCollector
 
 from queue import Queue
 from solution.VisualTools.graph.customgraph import CustomGraph
-from solution.VisualTools.graph.App import PyQtWindowWrapper
+from solution.App import PyQtWindowWrapper
 import time
 import sys
 def createRequiredComponents(subjectDataAccessor):
