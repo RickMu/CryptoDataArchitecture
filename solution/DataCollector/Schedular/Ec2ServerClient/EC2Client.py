@@ -5,7 +5,7 @@ from solution.DataCollector.Schedular.Ec2ServerClient.Ec2RequestBuilder import E
 from solution.DataCollector.Schedular.Ec2ServerClient.Ec2DataTransformer import Ec2DataTransformer
 import urllib.request
 import solution.server.cointrade_pb2 as cointrade_pd
-import json
+import pandas as pd
 
 
 class EC2TickersMap:
@@ -41,33 +41,37 @@ class EC2Client( IClient):
         return EC2TickersMap.EC2Tickers[ticker]
 
     def __requestEndPoint(self, request):
-        with urllib.request.urlopen(request, timeout=20) as response:
+        with urllib.request.urlopen(request) as response:
             data = response.read()
             return data
+
 
     def fetchData(self, ticker, timeSpan=None):
         if timeSpan is None:
             raise Exception("For EC2 Queries time span is needed")
 
         ticker = self.__mapTicker(ticker)
-        request = self._requestBuilder.buildFetchRequest(ticker, timeSpan)
-        print(request)
-        data = self.__requestEndPoint(request)
-        if data == []:
-            self._returnedData = None
-            return
-        trades = cointrade_pd.Trades()
+        requests = self._requestBuilder.buildFetchRequest(ticker, timeSpan)
+        print(requests)
 
-        trades.ParseFromString(data)
+        dfs = pd.DataFrame()
+        for request in requests:
+            data = self.__requestEndPoint(request)
+            if data == []:
+                self._returnedData = None
+                return
 
-        dataframe = self._dataTransformer.mapProtoBufferInputToOutput(trades)
-        self._returnedData = dataframe
+            trades = cointrade_pd.Trades()
+            trades.ParseFromString(data)
+            dataframe = self._dataTransformer.mapProtoBufferInputToOutput(trades)
+            dfs = dfs.append(dataframe)
+        self._returnedData = dfs
 
 
 if __name__ == '__main__':
     from solution.DataCollector.Schedular.InputColumn import InputColumns
     client = EC2Client()
-    client.setRequestConditions(Tickers.BITCOIN, (0, 1))
+    client.setRequestConditions(Tickers.BITCOIN, (2, 1))
     client.run()
     df = client.getReturnedData()
     df.sort_index(inplace= True)

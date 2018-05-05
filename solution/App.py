@@ -71,6 +71,7 @@ if __name__ == "__main__":
        hierachy. Data obtained from worker notifies data handlers each dataset has from from top to bottom.
 
        '''
+    import time
 
 
     DAY = 1440
@@ -107,7 +108,7 @@ if __name__ == "__main__":
     )
 
     schedular = SchedularController()
-    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(3, 1))
+    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(10, 1))
     schedular.setDataSetEntry(system.getHeadDataSetController())
     schedular.start()
 
