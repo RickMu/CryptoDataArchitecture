@@ -16,6 +16,19 @@ class SideColumnValues:
     SELL = 'sell'
 
 class Ec2DataTransformer(ITransformer):
+    def mapProtoBufferInputToOutput(self,trades):
+        jsons = []
+        for trade in trades.trades:
+            json= {}
+            json[EC2Columns.PRICE] = trade.price
+            json[EC2Columns.VOLUME] = trade.volume
+            json[EC2Columns.TIME] = trade.created_at
+            json[EC2Columns.TREND] = trade.trend
+            json[EC2Columns.GDX_ID] = trade.id
+            json[EC2Columns.SIDE] = trade.side
+            jsons.append(json)
+
+        return self.mapInputToRequiredOutput(jsons)
 
     def mapInputToRequiredOutput(self,data):
         #EC2 Api returns data in json format

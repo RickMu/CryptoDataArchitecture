@@ -4,6 +4,7 @@ from solution.DataCollector.Schedular.IClient.IClient import IClient
 from solution.DataCollector.Schedular.Ec2ServerClient.Ec2RequestBuilder import Ec2RequestBuilder
 from solution.DataCollector.Schedular.Ec2ServerClient.Ec2DataTransformer import Ec2DataTransformer
 import urllib.request
+import solution.server.cointrade_pb2 as cointrade_pd
 import json
 
 
@@ -41,7 +42,7 @@ class EC2Client( IClient):
 
     def __requestEndPoint(self, request):
         with urllib.request.urlopen(request, timeout=20) as response:
-            data = json.load(response)
+            data = response.read()
             return data
 
     def fetchData(self, ticker, timeSpan=None):
@@ -55,8 +56,11 @@ class EC2Client( IClient):
         if data == []:
             self._returnedData = None
             return
+        trades = cointrade_pd.Trades()
 
-        dataframe = self._dataTransformer.mapInputToRequiredOutput(data)
+        trades.ParseFromString(data)
+
+        dataframe = self._dataTransformer.mapProtoBufferInputToOutput(trades)
         self._returnedData = dataframe
 
 
@@ -67,6 +71,6 @@ if __name__ == '__main__':
     client.run()
     df = client.getReturnedData()
     df.sort_index(inplace= True)
-
+    print(df)
     df.groupby(df.index)\
         .agg({InputColumns.PRICE: ['min', 'max', 'mean'], InputColumns.VOLUME: 'sum'})
