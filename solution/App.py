@@ -97,22 +97,31 @@ if __name__ == "__main__":
                 (ComputedColumn.VOL_SUM, DAY),
                 (ComputedColumn.VOL_SUM, DAY),
                 (ComputedColumn.VOL_SUM, DAY)], OperatorType.STOK, HOURS_5),
-            (ComputedColumn.BUY_MINUS_SELL_VOL_SUM,[(ComputedColumn.BUY_MINUS_SELL,"")],OperatorType.SUM,HOURS_5),
+            (ComputedColumn.BUY_MINUS_SELL_VOL_SUM,[(ComputedColumn.BUY_MINUS_SELL,"")],OperatorType.SUM,DAY),
         ]
     ).addConfig(
         config = [
             (ComputedColumn.STOK_MOMENTUM_VOL, [(ComputedColumn.MOMENTUM_VOL, "")
                                                 ,(ComputedColumn.MOMENTUM_VOL, "")
                                                 ,(ComputedColumn.MOMENTUM_VOL, "")], OperatorType.STOK, DAY),
-            (ComputedColumn.WILLR_BUY_MINUS_SELL, [(ComputedColumn.BUY_MINUS_SELL_VOL_SUM, HOURS_5),
-                                                    (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, HOURS_5),
-                                                    (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, HOURS_5)], OperatorType.STOK, HOURS_5)
-            , (ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, [(ComputedColumn.MOMENTUM, HOURS_5),(ComputedColumn.BUY_MINUS_SELL_VOL_SUM,HOURS_5)],0)
+            (ComputedColumn.WILLR_BUY_MINUS_SELL, [(ComputedColumn.BUY_MINUS_SELL_VOL_SUM, DAY),
+                                                    (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, DAY),
+                                                    (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, DAY)], OperatorType.STOK, HOURS_5)
+            ,(ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, [(ComputedColumn.MOMENTUM, HOURS_5),
+                                                                (ComputedColumn.BUY_MINUS_SELL_VOL_SUM,DAY)],OperatorType.MULTIPLY,0)
         ]
+    ).addConfig(
+        config = [
+            (ComputedColumn.WILLR_MOMENTUM_BUY_MINUS_SELL_VOL_SUM,
+             [(ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, ""),
+                (ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, ""),
+                (ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, "")], OperatorType.STOK, DAY),
+        ]
+
     )
 
     schedular = SchedularController()
-    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(6, 0))
+    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(7, 0))
     schedular.setDataSetEntry(system.getHeadDataSetController())
     schedular.start()
 
@@ -136,7 +145,7 @@ if __name__ == "__main__":
     .addGraph()\
         .addPlot((ComputedColumn.WILLR_VOL,HOURS_5))\
     .addGraph()\
-        .addPlot((ComputedColumn.BUY_MINUS_SELL_VOL_SUM,HOURS_5))\
+        .addPlot((ComputedColumn.BUY_MINUS_SELL_VOL_SUM,DAY))\
     .addGraph()\
         .addPlot((ComputedColumn.WILLR_BUY_MINUS_SELL,HOURS_5))\
     .addGraph()\
@@ -144,5 +153,13 @@ if __name__ == "__main__":
     .addGraph()\
         .addPlot((ComputedColumn.STOK_MOMENTUM_VOL,DAY))
 
+
+    '''
+
+    .addGraph()\
+        .addPlot((ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM,""))\
+    .addGraph()\
+        .addPlot((ComputedColumn.WILLR_MOMENTUM_BUY_MINUS_SELL_VOL_SUM,DAY))\
+    '''
     grapher.Graph(app)
     app.start()

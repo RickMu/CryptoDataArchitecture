@@ -53,7 +53,7 @@ class DataSetSystem:
 
     def _createDataSetControllerAndAccessor(self,subjectDataAccessor):
         dataset = ComputedDataSet()
-        dataAccessor = DataSetAccessor(dataset)
+        dataAccessor = DataSetAccessor(dataset,subjectDataAccessor)
         updateHandler = ComputedDataUpdateHandler(dataset, subjectDataAccessor)
         indicatorFactory = TechnicalIndicatorsFactory()
         dataSetController = DataSetController(dataset, indicatorFactory, updateHandler)

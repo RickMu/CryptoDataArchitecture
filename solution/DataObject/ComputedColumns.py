@@ -18,6 +18,7 @@ class ComputedColumn(Enum):
     BUY_MINUS_SELL_VOL_SUM = 1<<14
     STOK_MOMENTUM_VOL = 1<<15
     MOMENTUM_BUY_MINUS_SELL_VOL_SUM = 1<<16
+    WILLR_MOMENTUM_BUY_MINUS_SELL_VOL_SUM = 1<<17
 
 class OriginalColumn(Enum):
     PRICE_MEAN = 1<<0

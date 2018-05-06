@@ -8,6 +8,8 @@ import pandas as pd
 import time
 
 class CustomGraph(DataUpdateListener):
+    TRUNCATE_LENGTH= 0
+
     def __init__(self):
         self._axis = CustomDateAxis(orientation='bottom')
         self.graph = pg.PlotItem( axisItems={'bottom': self._axis})
@@ -41,8 +43,8 @@ class CustomGraph(DataUpdateListener):
         timeStamp = [int(time.mktime(i)) for i in t]
 
         xy = {
-            'x': timeStamp[startPos:],
-            'y': list(self._data[key].values)[startPos:]
+            'x': timeStamp[CustomGraph.TRUNCATE_LENGTH:],
+            'y': list(self._data[key].values)[CustomGraph.TRUNCATE_LENGTH:]
         }
 
         return xy
