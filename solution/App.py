@@ -98,21 +98,21 @@ if __name__ == "__main__":
                 (ComputedColumn.VOL_SUM, DAY),
                 (ComputedColumn.VOL_SUM, DAY)], OperatorType.STOK, HOURS_5),
             (ComputedColumn.BUY_MINUS_SELL_VOL_SUM,[(ComputedColumn.BUY_MINUS_SELL,"")],OperatorType.SUM,HOURS_5),
-
         ]
     ).addConfig(
         config = [
             (ComputedColumn.STOK_MOMENTUM_VOL, [(ComputedColumn.MOMENTUM_VOL, "")
                                                 ,(ComputedColumn.MOMENTUM_VOL, "")
-                                                ,(ComputedColumn.MOMENTUM_VOL, "")], OperatorType.STOK, HOURS_5),
+                                                ,(ComputedColumn.MOMENTUM_VOL, "")], OperatorType.STOK, DAY),
             (ComputedColumn.WILLR_BUY_MINUS_SELL, [(ComputedColumn.BUY_MINUS_SELL_VOL_SUM, HOURS_5),
                                                     (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, HOURS_5),
                                                     (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, HOURS_5)], OperatorType.STOK, HOURS_5)
+            , (ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, [(ComputedColumn.MOMENTUM, HOURS_5),(ComputedColumn.BUY_MINUS_SELL_VOL_SUM,HOURS_5)],0)
         ]
     )
 
     schedular = SchedularController()
-    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(6, 1))
+    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(6, 0))
     schedular.setDataSetEntry(system.getHeadDataSetController())
     schedular.start()
 
