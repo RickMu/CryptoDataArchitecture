@@ -11,6 +11,10 @@ class GraphBuilder:
         return self
 
     def addPlot(self,tuples):
+
+        if tuples[1] != "" and CustomGraph.TRUNCATE_LENGTH < tuples[1]:
+            CustomGraph.TRUNCATE_LENGTH = tuples[1]
+
         self._graphs[-1].addPlot(tuples)
         return self
 
