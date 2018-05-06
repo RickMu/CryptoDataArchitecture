@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package server;
+
+message Trade{
+    string price = 1;
+    string side = 2;
+    string created_at = 3;
+    int32 id = 4;
+    string volume = 5;
+    string trend = 6;
+}
+
+message Trades{
+
+    repeated Trade trades=1;
+}

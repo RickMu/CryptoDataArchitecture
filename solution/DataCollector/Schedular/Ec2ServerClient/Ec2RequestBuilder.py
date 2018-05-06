@@ -83,17 +83,46 @@ class Ec2RequestBuilder:
         d = datetime.datetime.strftime(date,format)
         return d
 
-    def buildFetchRequest(self,ticker, timespan= None):
+    def buildFetchRequest(self,ticker, timespan = None):
         if timespan is None:
             raise Exception("TimeSpan for EC2 shouldn't be none")
         serverTime = datetime.datetime.utcnow()+datetime.timedelta(hours=11)
-        rq = self.__buildFindInBetweenRequest(ticker, serverTime, timespan)
-        return rq
+        dates, timespans = self.formBatchRequest(serverTime,timespan)
+
+        rqs = []
+        for date,timespan in zip(dates,timespans):
+            rq = self.__buildFindInBetweenRequest(ticker, date, timespan)
+            rqs.append(rq)
+        return rqs
+
+    def formBatchRequest(self, start_time, timespan):
+        #gonna hard code a 5 here
+        timespans = []
+        start_times = [start_time]
+        timespan = [timespan[0],timespan[1]]
+        intervalTime = 4
+
+        while timespan[0] - intervalTime  >= 0:
+            t = (intervalTime,0)
+            timespans.append(t)
+
+            new_date = start_times[-1] - datetime.timedelta(days = intervalTime)
+            start_times.append(new_date)
+            timespan[0] -= intervalTime
+
+        timespans.append((timespan[0],timespan[1]))
+
+        return start_times,timespans
+
+
+
 
 if __name__ == "__main__":
-    from solution.Schedular.Tickers import Tickers
     requestBuilder =  Ec2RequestBuilder()
     start_date = datetime.datetime.utcnow()+datetime.timedelta(hours=11)
-    rq = requestBuilder.buildFetchRequest('BTC-USD',(1,1))
-    print(rq)
+    #rq = requestBuilder.buildFetchRequest('BTC-USD',(1,1))
+    #print(rq)
 
+    requests = requestBuilder.buildFetchRequest("BTC-USD", (10,1))
+
+    print(requests)
