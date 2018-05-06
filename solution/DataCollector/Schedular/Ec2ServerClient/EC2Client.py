@@ -67,7 +67,6 @@ if __name__ == '__main__':
     client.run()
     df = client.getReturnedData()
     df.sort_index(inplace= True)
-    print(df)
 
     df.groupby(df.index)\
         .agg({InputColumns.PRICE: ['min', 'max', 'mean'], InputColumns.VOLUME: 'sum'})

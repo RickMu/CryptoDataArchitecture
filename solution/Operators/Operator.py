@@ -53,8 +53,16 @@ def willR(data, inputCols,periods):
 def multiply(data,inputCols,periods):
     col1 = inputCols[0]
     col2 = inputCols[1]
-    data[col1] = data[col1]*data[col2]
-    return data[col1]
+    values = data[col1]*data[col2]
+    return values
+
+def subtract (data,inputCols,periods):
+    subtractedFrom = inputCols[0]
+    subtractor = inputCols[1]
+    values = data[subtractedFrom] - data[subtractor]
+    return values
+
+
 
 class OperatorType(Enum):
     RSI = 1
@@ -64,6 +72,7 @@ class OperatorType(Enum):
     STOK = 16
     WILLR = 32
     MULTIPLY = 64
+    SUBTRACT = 128
 
 class OperatorLookUp:
     def __init__(self):
@@ -75,7 +84,8 @@ class OperatorLookUp:
             OperatorType.DIFF : diff,
             OperatorType.STOK: stoK,
             OperatorType.WILLR: willR,
-            OperatorType.MULTIPLY: multiply
+            OperatorType.MULTIPLY: multiply,
+            OperatorType.SUBTRACT: subtract
         }
     
     Singleton = None

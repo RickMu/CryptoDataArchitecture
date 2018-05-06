@@ -9,10 +9,14 @@ class ComputedColumn(Enum):
     PRICE_STOK = 1<<5
     PRICE_STOD = 1<<6
     PRICE_AVG = 1<<7
-    VOL_WILLR = 1<<8
+    WILLR_VOL = 1<<8
     VOL_WILLD = 1<<9
     VOL_SUM = 1<<10
     MOMENTUM_VOL = 1<<11
+    BUY_MINUS_SELL = 1<<12
+    WILLR_BUY_MINUS_SELL = 1<<13
+    BUY_MINUS_SELL_VOL_SUM = 1<<14
+    STOK_MOMENTUM_VOL = 1<<15
 
 class OriginalColumn(Enum):
     PRICE_MEAN = 1<<0
