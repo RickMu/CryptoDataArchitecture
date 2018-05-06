@@ -107,12 +107,21 @@ if __name__ == "__main__":
             (ComputedColumn.WILLR_BUY_MINUS_SELL, [(ComputedColumn.BUY_MINUS_SELL_VOL_SUM, HOURS_5),
                                                     (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, HOURS_5),
                                                     (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, HOURS_5)], OperatorType.STOK, HOURS_5)
-            , (ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, [(ComputedColumn.MOMENTUM, HOURS_5),(ComputedColumn.BUY_MINUS_SELL_VOL_SUM,HOURS_5)],0)
+            ,(ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, [(ComputedColumn.MOMENTUM, HOURS_5),
+                                                                (ComputedColumn.BUY_MINUS_SELL_VOL_SUM,HOURS_5)],OperatorType.MULTIPLY,0)
         ]
+    ).addConfig(
+        config = [
+            (ComputedColumn.WILLR_MOMENTUM_BUY_MINUS_SELL_VOL_SUM,
+             [(ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, ""),
+                (ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, ""),
+                (ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, "")], OperatorType.STOK, DAY),
+        ]
+
     )
 
     schedular = SchedularController()
-    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(6, 0))
+    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(7, 0))
     schedular.setDataSetEntry(system.getHeadDataSetController())
     schedular.start()
 
@@ -142,7 +151,11 @@ if __name__ == "__main__":
     .addGraph()\
         .addPlot((ComputedColumn.MOMENTUM_VOL,""))\
     .addGraph()\
-        .addPlot((ComputedColumn.STOK_MOMENTUM_VOL,DAY))
+        .addPlot((ComputedColumn.STOK_MOMENTUM_VOL,DAY))\
+    .addGraph()\
+        .addPlot((ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM,""))\
+    .addGraph()\
+        .addPlot((ComputedColumn.WILLR_MOMENTUM_BUY_MINUS_SELL_VOL_SUM,DAY))
 
     grapher.Graph(app)
     app.start()

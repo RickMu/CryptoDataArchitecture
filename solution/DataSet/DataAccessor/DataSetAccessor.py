@@ -1,18 +1,20 @@
 from solution.DataSet.DataAccessor.IDataAccessor import IDataAccessor
 class DataSetAccessor(IDataAccessor):
 
-    def __init__(self,dataset):
-        IDataAccessor.__init__(self,dataset)
+    def __init__(self,dataset, parent = None):
+        IDataAccessor.__init__(self,dataset,parent)
 
     def read(self, key, length, TailUp=True):
-        self.__checkColumnExists(str(key))
-        allData = self._dataset.getColumn(str(key))
+        if self.__checkColumnExists(str(key)) is False:
+            allData = self.parent.read(key,length)
+        else:
+            allData = self._dataset.getColumn(str(key))
 
-        if TailUp:
-            startPos = allData.shape[0] - length
-            if startPos <0:
-                startPos= 0
-            allData = allData[startPos:]
+            if TailUp:
+                startPos = allData.shape[0] - length
+                if startPos <0:
+                    startPos= 0
+                allData = allData[startPos:]
         return allData
 
     def getColumnNames(self):
@@ -21,7 +23,13 @@ class DataSetAccessor(IDataAccessor):
     def __checkColumnExists(self, name):
         allNames = self._dataset.getColumnNames()
 
+
+
         if name not in allNames:
-            raise Exception("Given Column Name %s is not in data set %s" % (name, allNames))
+            if self.parent is None:
+                raise Exception("Exception No Required Column %s " % (name))
+            return False
+
+        return True
 
 

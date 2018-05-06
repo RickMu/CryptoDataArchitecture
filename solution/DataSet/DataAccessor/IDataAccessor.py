@@ -1,6 +1,7 @@
 from abc import abstractmethod
 class IDataAccessor:
-    def __init__(self,dataset):
+    def __init__(self,dataset,parent = None):
+        self.parent = parent
         self._dataset = dataset
 
     @abstractmethod
