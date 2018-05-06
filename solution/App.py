@@ -112,7 +112,7 @@ if __name__ == "__main__":
     )
 
     schedular = SchedularController()
-    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(8, 1))
+    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(6, 1))
     schedular.setDataSetEntry(system.getHeadDataSetController())
     schedular.start()
 
@@ -142,7 +142,7 @@ if __name__ == "__main__":
     .addGraph()\
         .addPlot((ComputedColumn.MOMENTUM_VOL,""))\
     .addGraph()\
-        .addPlot((ComputedColumn.STOK_MOMENTUM_VOL,HOURS_5))
+        .addPlot((ComputedColumn.STOK_MOMENTUM_VOL,DAY))
 
     grapher.Graph(app)
     app.start()

@@ -100,7 +100,7 @@ class Ec2RequestBuilder:
         timespans = []
         start_times = [start_time]
         timespan = [timespan[0],timespan[1]]
-        intervalTime = 5
+        intervalTime = 4
 
         while timespan[0] - intervalTime  >= 0:
             t = (intervalTime,0)
