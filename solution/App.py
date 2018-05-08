@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append("B:\\MyGit\\CryptoCoin")
+
 from queue import Queue
 
 import pyqtgraph as pg
@@ -83,6 +87,7 @@ if __name__ == "__main__":
         config= [
             (ComputedColumn.VOL_SUM, [(OriginalColumn.VOLUME, "")], OperatorType.SUM, DAY),
             (ComputedColumn.MOMENTUM, [(OriginalColumn.PRICE_MEAN, "")], OperatorType.DIFF, HOURS_5),
+            (ComputedColumn.MOMENTUM, [(OriginalColumn.PRICE_MEAN,"")], OperatorType.DIFF,DAY),
             (ComputedColumn.PRICE_AVG, [(OriginalColumn.PRICE_MEAN, "")], OperatorType.MOVAVG, HOURS_5),
             (ComputedColumn.BUY_MINUS_SELL, [(OriginalColumn.BUY_VOL, ""),(OriginalColumn.SELL_VOL, "")], OperatorType.SUBTRACT,0),
             (ComputedColumn.PRICE_STOK, [(OriginalColumn.PRICE_MEAN, "")
@@ -107,17 +112,17 @@ if __name__ == "__main__":
             (ComputedColumn.WILLR_BUY_MINUS_SELL, [(ComputedColumn.BUY_MINUS_SELL_VOL_SUM, DAY),
                                                     (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, DAY),
                                                     (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, DAY)], OperatorType.STOK, HOURS_5)
-            ,(ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, [(ComputedColumn.MOMENTUM, HOURS_5),
-                                                                (ComputedColumn.BUY_MINUS_SELL_VOL_SUM,DAY)],OperatorType.MULTIPLY,0)
-        ]
+            ,(ComputedColumn.BUY_SELL_SUM_DIFF, [(ComputedColumn.BUY_MINUS_SELL_VOL_SUM,DAY)], OperatorType.DIFF, DAY)
+            ,(ComputedColumn.VOL_SUM_DIFF,[(ComputedColumn.VOL_SUM, DAY)], OperatorType.DIFF,2*DAY)
+            ,(ComputedColumn.STOK_MOMENTUM_VOL, [(ComputedColumn.MOMENTUM_VOL, "")
+                                                ,(ComputedColumn.MOMENTUM_VOL, "")
+                                                ,(ComputedColumn.MOMENTUM_VOL, "")], OperatorType.STOK, 2*DAY),
+           ]
     ).addConfig(
         config = [
-            (ComputedColumn.WILLR_MOMENTUM_BUY_MINUS_SELL_VOL_SUM,
-             [(ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, ""),
-                (ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, ""),
-                (ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM, "")], OperatorType.STOK, DAY),
+            (ComputedColumn.MOMENTUM_CROSS_BUY_SELL_SUM_DIFF,[(ComputedColumn.BUY_SELL_SUM_DIFF,DAY)
+                                                              ,(ComputedColumn.MOMENTUM,HOURS_5)], OperatorType.MULTIPLY,0)
         ]
-
     )
 
     schedular = SchedularController()

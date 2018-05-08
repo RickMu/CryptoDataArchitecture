@@ -24,10 +24,15 @@ class Schedular(Collector):
 
     def _getRealTimeData(self):
         while True:
-            self.GdxClient.run()
-            data = self.GdxClient.getReturnedData()
-            if data is not None:
-                self._addToQueue(data)
+            try:
+                self.GdxClient.run()
+
+                data = self.GdxClient.getReturnedData()
+                if data is not None:
+                    self._addToQueue(data)
+            except:
+                print("exception")
+
             time.sleep(5)
 
 

@@ -21,6 +21,9 @@ class RuleBase:
 
         return str(tupleColumnRepresentation[0]) + str(tupleColumnRepresentation[1])
 
+    def getRequiredColumns(self):
+        return self._requiredColumns
+
     @abstractmethod
     def compute(self,requiredData, updatedLength):
         return
@@ -50,6 +53,3 @@ class ColumnRule(RuleBase):
         self.checkOnRequiredColumns(requiredData)
         data = self.__operator(requiredData, self._requiredColumns, self.__periods)
         return data.iloc[len(data)-updatedLength:]
-
-    def getRequiredColumns(self):
-        return self._requiredColumns
