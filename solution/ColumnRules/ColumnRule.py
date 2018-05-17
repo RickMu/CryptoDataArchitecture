@@ -12,7 +12,12 @@ class RuleBase:
         for pos in range(len(self._requiredColumns)):
             self._requiredColumns[pos] = self._toIdentifier(self._requiredColumns[pos])
 
+    def getRequiredColumns(self):
+        return self._requiredColumns
+
     def _toIdentifier(self,tupleColumnRepresentation):
+
+
         if len(tupleColumnRepresentation) != 2:
             raise Exception("A Tuple Column Representation should be in the form of (Enum, period), Given: %s"
                             % (tupleColumnRepresentation))
@@ -20,9 +25,6 @@ class RuleBase:
             return str(tupleColumnRepresentation[0])
 
         return str(tupleColumnRepresentation[0]) + str(tupleColumnRepresentation[1])
-
-    def getRequiredColumns(self):
-        return self._requiredColumns
 
     @abstractmethod
     def compute(self,requiredData, updatedLength):

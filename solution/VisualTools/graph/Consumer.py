@@ -8,7 +8,7 @@ class GraphDataConsumer(Consumer, pg.QtCore.QThread):
         Consumer.__init__(self)
 
     def toggleState(self):
-        self._toggleState()
+        self._toggleConsumeState()
 
     def consume(self, data):
         self.newData.emit(data)

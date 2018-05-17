@@ -1,8 +1,9 @@
 import pandas as pd
 from solution.DataObject.ComputedColumns import OriginalColumn
 from solution.DataCollector.Schedular.InputColumn import InputColumns
+from solution.DataProcessor.contracts.IProcessor import IProcessor
 
-class DataProcessor:
+class DataProcessor(IProcessor):
     
     def __init__(self):
         self.__cachedData = pd.DataFrame()
@@ -52,4 +53,3 @@ class DataProcessor:
         df.index = data.index.values
         df.index.name = str(OriginalColumn.TIME)
         return df
-        

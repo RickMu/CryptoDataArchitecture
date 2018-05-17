@@ -1,6 +1,3 @@
-
-from pyqtgraph.Qt import QtCore,QtGui
-import pyqtgraph as pg
 from solution.ConsumerProducerFrameWork.ConsumerProducer import Worker
 from solution.DataCollector.Schedular.Schedular import Schedular
 from solution.DataSet.OriginalDataSet.DataSet import DataSet
@@ -13,15 +10,15 @@ from solution.DataSet.ComputedDataSet.ComputedDataUpdateHandler import ComputedD
 from solution.DataSet.ComputedDataSet.TechnicalIndicatorsFactory import TechnicalIndicatorsFactory
 from solution.Operators.Operator import OperatorType
 from solution.DataObject.ComputedColumns import ComputedColumn
-from solution.DataSet.DataProcessor.DataProcessor import DataProcessor
+from solution.DataProcessor.DataProcessor import DataProcessor
 from solution.VisualTools.DataCollector import GraphDataCollector
 
 
 from queue import Queue
 from solution.VisualTools.graph.customgraph import CustomGraph
 from solution.App import PyQtWindowWrapper
-import time
-import sys
+
+
 def createRequiredComponents(subjectDataAccessor):
     dataset = ComputedDataSet()
     dataAccessor = DataSetAccessor(dataset)

@@ -55,7 +55,6 @@ class PyQtWindowWrapper(DataUpdateSubject):
             listener.onDataUpdate(data)
         self._consumer.toggleState()
 
-
 def createRequiredComponents(subjectDataAccessor):
     dataset = ComputedDataSet()
     dataAccessor = DataSetAccessor(dataset)
@@ -76,8 +75,6 @@ if __name__ == "__main__":
        hierachy. Data obtained from worker notifies data handlers each dataset has from from top to bottom.
 
        '''
-    import time
-
 
     DAY = 1440
     HOURS_5 = 300
@@ -85,6 +82,9 @@ if __name__ == "__main__":
     system.initialize()
     system.addConfig(
         config= [
+            (ComputedColumn.BINARISE_PRICE,[(OriginalColumn.PRICE_MEAN,"")], OperatorType.BINARISE_LEFT_DIFF,HOURS_5),
+            (ComputedColumn.BINARISE_PRICE, [(OriginalColumn.PRICE_MEAN, "")],OperatorType.BINARISE_LEFT_DIFF ,2),
+            (ComputedColumn.ALIGN_VOLUME_SUM_PRICE, [(OriginalColumn.VOLUME, ""), (OriginalColumn.PRICE_MEAN,"")], OperatorType.SUM_ALIGN_CHANGE, DAY),
             (ComputedColumn.VOL_SUM, [(OriginalColumn.VOLUME, "")], OperatorType.SUM, DAY),
             (ComputedColumn.MOMENTUM, [(OriginalColumn.PRICE_MEAN, "")], OperatorType.DIFF, HOURS_5),
             (ComputedColumn.MOMENTUM, [(OriginalColumn.PRICE_MEAN,"")], OperatorType.DIFF,DAY),
@@ -92,10 +92,13 @@ if __name__ == "__main__":
             (ComputedColumn.BUY_MINUS_SELL, [(OriginalColumn.BUY_VOL, ""),(OriginalColumn.SELL_VOL, "")], OperatorType.SUBTRACT,0),
             (ComputedColumn.PRICE_STOK, [(OriginalColumn.PRICE_MEAN, "")
                 , (OriginalColumn.PRICE_MAX, "")
-                , (OriginalColumn.PRICE_MIN, "")], OperatorType.STOK, HOURS_5)
+                , (OriginalColumn.PRICE_MIN, "")], OperatorType.STOK, HOURS_5),
+            (ComputedColumn.AROON_UP_PRICE, [(OriginalColumn.PRICE_MEAN, "")], OperatorType.AROON_UP, DAY),
+            (ComputedColumn.AROON_DOWN_PRICE, [(OriginalColumn.PRICE_MEAN, "")], OperatorType.AROON_DOWN, DAY),
         ]
     ).addConfig(
         config=[
+            (ComputedColumn.ALIGN_VOLUME_SUM_PRICE,[(OriginalColumn.VOLUME, ""), (ComputedColumn.BINARISE_PRICE, 2)], OperatorType.SUM_ALIGN_CHANGE,DAY),
             (ComputedColumn.MOMENTUM_AVG, [(ComputedColumn.MOMENTUM, HOURS_5)], OperatorType.MOVAVG, HOURS_5),
             (ComputedColumn.MOMENTUM_VOL, [(ComputedColumn.MOMENTUM, HOURS_5),(ComputedColumn.VOL_SUM,DAY)],OperatorType.MULTIPLY,0),
             (ComputedColumn.WILLR_VOL, [
@@ -113,10 +116,9 @@ if __name__ == "__main__":
                                                     (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, DAY),
                                                     (ComputedColumn.BUY_MINUS_SELL_VOL_SUM, DAY)], OperatorType.STOK, HOURS_5)
             ,(ComputedColumn.BUY_SELL_SUM_DIFF, [(ComputedColumn.BUY_MINUS_SELL_VOL_SUM,DAY)], OperatorType.DIFF, DAY)
-            ,(ComputedColumn.VOL_SUM_DIFF,[(ComputedColumn.VOL_SUM, DAY)], OperatorType.DIFF,2*DAY)
-            ,(ComputedColumn.STOK_MOMENTUM_VOL, [(ComputedColumn.MOMENTUM_VOL, "")
-                                                ,(ComputedColumn.MOMENTUM_VOL, "")
-                                                ,(ComputedColumn.MOMENTUM_VOL, "")], OperatorType.STOK, 2*DAY),
+            ,(ComputedColumn.STOK_ALIGN_VOLUME_SUM_PRICE, [(ComputedColumn.ALIGN_VOLUME_SUM_PRICE, DAY)
+                                                            , (ComputedColumn.ALIGN_VOLUME_SUM_PRICE, DAY)
+                                                            , (ComputedColumn.ALIGN_VOLUME_SUM_PRICE, DAY)], OperatorType.STOK, DAY)
            ]
     ).addConfig(
         config = [
@@ -156,7 +158,14 @@ if __name__ == "__main__":
     .addGraph()\
         .addPlot((ComputedColumn.MOMENTUM_VOL,""))\
     .addGraph()\
-        .addPlot((ComputedColumn.STOK_MOMENTUM_VOL,DAY))
+        .addPlot((ComputedColumn.STOK_MOMENTUM_VOL,DAY))\
+    .addGraph()\
+        .addPlot((ComputedColumn.AROON_UP_PRICE,DAY), symbol_brush='g')\
+        .addPlot((ComputedColumn.AROON_DOWN_PRICE,DAY),symbol_brush= 'r')\
+    .addGraph()\
+        .addPlot((ComputedColumn.ALIGN_VOLUME_SUM_PRICE,DAY))\
+    .addGraph()\
+        .addPlot((ComputedColumn.STOK_ALIGN_VOLUME_SUM_PRICE,DAY))
 
 
     '''

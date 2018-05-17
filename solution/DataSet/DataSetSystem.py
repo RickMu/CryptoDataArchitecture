@@ -2,23 +2,15 @@
 '''
 Meant as a main controller for the whole system
 '''
-from solution.ConsumerProducerFrameWork.ConsumerProducer import Worker
-from solution.DataCollector.Schedular.Schedular import Schedular
 
-from solution.DataCollector.Schedular.Tickers import Tickers
-from solution.DataObject.ComputedColumns import OriginalColumn
 from solution.DataSet.ComputedDataSet.ComputedDataSet import ComputedDataSet
 from solution.DataSet.OriginalDataSet.DataSet import DataSet
 from solution.DataSet.DataAccessor.DataSetAccessor import DataSetAccessor
-from solution.DataSet.DataProcessor.DataProcessor import DataProcessor
+from solution.DataProcessor.DataProcessor import DataProcessor
 from solution.DataSet.ComputedDataSet.DataSetController import DataSetController
 from solution.DataSet.ComputedDataSet.ComputedDataUpdateHandler import ComputedDataUpdateHandler
 from solution.DataSet.ComputedDataSet.TechnicalIndicatorsFactory import TechnicalIndicatorsFactory
-from solution.Operators.Operator import OperatorType
-from solution.DataObject.ComputedColumns import ComputedColumn
-from solution.VisualTools.DataCollector.GraphDataCollector import GraphDataCollector
-from queue import Queue
-from solution.VisualTools.graph.customgraph import CustomGraph
+
 
 class DataSetSystem:
 

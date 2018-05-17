@@ -10,7 +10,7 @@ class DataSet(Consumer,IDataUpdateSubject):
         self.__datalock = Lock()
         self.__listeners = []
         self.__dataProcessor = processor
-        super()._toggleState()
+        super()._toggleConsumeState()
         
     def getSize(self):
         return self.__originalDF.shape[0]
@@ -25,7 +25,7 @@ class DataSet(Consumer,IDataUpdateSubject):
 
     def updateColumns(self, data):
         self.__datalock.acquire()
-        super()._toggleState()
+        super()._toggleConsumeState()
 
         data = self.__dataProcessor.process(data)
         self.__originalDF = self.__originalDF.append(data)
@@ -34,7 +34,7 @@ class DataSet(Consumer,IDataUpdateSubject):
         print("******************This is in dataset**********************")
         print(self.__originalDF.shape[0])
 
-        super()._toggleState()
+        super()._toggleConsumeState()
         self.__datalock.release()
 
     #making it so that every dataset only has one listener
