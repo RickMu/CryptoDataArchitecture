@@ -7,8 +7,8 @@ from solution.DataSet.OriginalDataSet.DataSet import DataSet
 from solution.DataCollector.Schedular.Tickers import Tickers
 from solution.DataObject.ComputedColumns import OriginalColumn
 from solution.DataSet.ComputedDataSet.ComputedDataSet import ComputedDataSet
-from solution.DataSet.DataAccessor.DataSetAccessor import DataSetAccessor
-from solution.DataSet.ComputedDataSet.DataSetController import DataSetController
+from solution.DataSet.DataAccessor.DataAccessor import DataAccessor
+from solution.DataSet.ComputedDataSet.DataSetManager import DataSetManager
 from solution.DataSet.ComputedDataSet.ComputedDataUpdateHandler import ComputedDataUpdateHandler
 from solution.DataSet.ComputedDataSet.TechnicalIndicatorsFactory import TechnicalIndicatorsFactory
 from solution.Operators.Operator import OperatorType
@@ -24,11 +24,11 @@ import time
 import sys
 def createRequiredComponents(subjectDataAccessor):
     dataset = ComputedDataSet()
-    dataAccessor = DataSetAccessor(dataset)
+    dataAccessor = DataAccessor(dataset)
     updateHandler = ComputedDataUpdateHandler(dataset,subjectDataAccessor)
     indicatorFactory = TechnicalIndicatorsFactory()
 
-    dataSetController = DataSetController(dataset,indicatorFactory,updateHandler)
+    dataSetController = DataSetManager(dataset, indicatorFactory, updateHandler)
     return dataSetController,dataAccessor
 
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     processor = DataProcessor()
     dataSet = DataSet(processor)
-    accessor = DataSetAccessor(dataSet)
+    accessor = DataAccessor(dataSet)
     accessors.append(accessor)
 
     configs = [

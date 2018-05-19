@@ -1,5 +1,5 @@
 from solution.DataSet.DataAccessor.IDataAccessor import IDataAccessor
-class DataSetAccessor(IDataAccessor):
+class DataAccessor(IDataAccessor):
 
     def __init__(self,dataset, parent = None):
         IDataAccessor.__init__(self,dataset,parent)
