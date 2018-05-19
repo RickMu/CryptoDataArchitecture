@@ -10,9 +10,9 @@ from solution.DataObject.ComputedColumns import ComputedColumn
 from solution.DataObject.ComputedColumns import OriginalColumn
 from solution.DataSet.ComputedDataSet.ComputedDataSet import ComputedDataSet
 from solution.DataSet.ComputedDataSet.ComputedDataUpdateHandler import ComputedDataUpdateHandler
-from solution.DataSet.ComputedDataSet.DataSetController import DataSetController
+from solution.DataSet.ComputedDataSet.DataSetManager import DataSetManager
 from solution.DataSet.ComputedDataSet.TechnicalIndicatorsFactory import TechnicalIndicatorsFactory
-from solution.DataSet.DataAccessor.DataSetAccessor import DataSetAccessor
+from solution.DataSet.DataAccessor.DataAccessor import DataAccessor
 from solution.Operators.Operator import OperatorType
 from solution.VisualTools.DataCollector.GraphDataCollector import GraphDataCollector
 from solution.VisualTools.DataUpdateContract.IDataUpdateContract import DataUpdateSubject
@@ -54,10 +54,10 @@ class PyQtWindowWrapper(DataUpdateSubject):
 
 def createRequiredComponents(subjectDataAccessor):
     dataset = ComputedDataSet()
-    dataAccessor = DataSetAccessor(dataset)
+    dataAccessor = DataAccessor(dataset)
     updateHandler = ComputedDataUpdateHandler(dataset,subjectDataAccessor)
     indicatorFactory = TechnicalIndicatorsFactory()
-    dataSetController = DataSetController(dataset,indicatorFactory,updateHandler)
+    dataSetController = DataSetManager(dataset, indicatorFactory, updateHandler)
     return dataSetController,dataAccessor
 
 if __name__ == "__main__":

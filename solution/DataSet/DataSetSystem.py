@@ -9,9 +9,9 @@ from solution.DataCollector.Schedular.Tickers import Tickers
 from solution.DataObject.ComputedColumns import OriginalColumn
 from solution.DataSet.ComputedDataSet.ComputedDataSet import ComputedDataSet
 from solution.DataSet.OriginalDataSet.DataSet import DataSet
-from solution.DataSet.DataAccessor.DataSetAccessor import DataSetAccessor
+from solution.DataSet.DataAccessor.DataAccessor import DataAccessor
 from solution.DataSet.DataProcessor.DataProcessor import DataProcessor
-from solution.DataSet.ComputedDataSet.DataSetController import DataSetController
+from solution.DataSet.ComputedDataSet.DataSetManager import DataSetManager
 from solution.DataSet.ComputedDataSet.ComputedDataUpdateHandler import ComputedDataUpdateHandler
 from solution.DataSet.ComputedDataSet.TechnicalIndicatorsFactory import TechnicalIndicatorsFactory
 from solution.Operators.Operator import OperatorType
@@ -39,7 +39,7 @@ class DataSetSystem:
     def initialize(self):
         processor = DataProcessor()
         dataSet = DataSet(processor)
-        accessor = DataSetAccessor(dataSet)
+        accessor = DataAccessor(dataSet)
         self._dataSetControllers.append(dataSet)
         self._dataaccessors.append(accessor)
 
@@ -52,9 +52,6 @@ class DataSetSystem:
         return self
 
     def _createDataSetControllerAndAccessor(self,subjectDataAccessor):
-        dataset = ComputedDataSet()
-        dataAccessor = DataSetAccessor(dataset,subjectDataAccessor)
-        updateHandler = ComputedDataUpdateHandler(dataset, subjectDataAccessor)
-        indicatorFactory = TechnicalIndicatorsFactory()
-        dataSetController = DataSetController(dataset, indicatorFactory, updateHandler)
-        return dataSetController, dataAccessor
+        dataSetController = DataSetManager(subjectDataAccessor)
+
+        return dataSetController, dataSetController.getDataAccessor()
