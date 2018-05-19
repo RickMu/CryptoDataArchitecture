@@ -128,7 +128,7 @@ if __name__ == "__main__":
     )
 
     schedular = SchedularController()
-    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(7, 0))
+    schedular.setRequestConditions(coin=Tickers.BITCOIN, timespan=(0, 1))
     schedular.setDataSetEntry(system.getHeadDataSetController())
     schedular.start()
 
