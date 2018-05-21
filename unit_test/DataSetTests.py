@@ -39,7 +39,7 @@ class DataSetUnitTests(TestCase):
         self.dataProcessor.process = mock_processor_process
 
         self.sut.consume(self.df)
-        data = self.sut.read('price')
+        data = self.sut.readPartial('price')
 
         self.assertEqual(data.size,self.df.price.size)
         mock_processor_process.assert_called_once()

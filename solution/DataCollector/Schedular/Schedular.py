@@ -1,11 +1,12 @@
-from solution.DataCollector.Schedular.Ec2ServerClient.EC2Client import EC2Client
-from solution.DataCollector.Schedular.GdxClient.GdxClient import GdxClient
 import time
-from solution.ConsumerProducerFrameWork.ConsumerProducer import Collector
-from solution.DataCollector.contracts.IDataProvider import IDataProvider
 from threading import Thread
 
-class Schedular(IDataProvider,Thread):
+from solution.DataCollector.BaseDataProvider import BaseDataProvider
+from solution.DataCollector.Schedular.Ec2ServerClient.EC2Client import EC2Client
+from solution.DataCollector.Schedular.GdxClient.GdxClient import GdxClient
+
+
+class Schedular(BaseDataProvider):
 
     def __init__(self):
         Thread.__init__(self)

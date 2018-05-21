@@ -26,15 +26,15 @@ class LogicTests(unittest.TestCase):
 
     def test_DifferenceTest(self):
         sut = ColumnRule([OriginalColumn.PRICE_MEAN], OperatorType.DIFF,1)
-        data = self.ds.read(OriginalColumn.PRICE_MEAN)
+        data = self.ds.readPartial(OriginalColumn.PRICE_MEAN)
         df = pd.DataFrame()
         df[(OriginalColumn.PRICE_MEAN)] = data
         diff = sut.compute(df,data.size,)
         self.assertEqual(data.size,diff.size)
     def test_STOK(self):
-        d1 = self.ds.read(OriginalColumn.PRICE_MEAN)
-        d2 = self.ds.read(OriginalColumn.PRICE_MIN)
-        d3 = self.ds.read(OriginalColumn.PRICE_MAX)
+        d1 = self.ds.readPartial(OriginalColumn.PRICE_MEAN)
+        d2 = self.ds.readPartial(OriginalColumn.PRICE_MIN)
+        d3 = self.ds.readPartial(OriginalColumn.PRICE_MAX)
         df = pd.DataFrame()
         df[OriginalColumn.PRICE_MEAN] = d1
         df[OriginalColumn.PRICE_MAX] = d2

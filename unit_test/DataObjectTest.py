@@ -32,7 +32,7 @@ class DataObjectTests(unittest.TestCase):
     def test_DataObject_getData_Method(self):
         sut = DataObject(OriginalColumn.PRICE_MEAN,self.ds, self.mediator)
         data = sut.getData()
-        d1 = self.ds.read(str(OriginalColumn.PRICE_MEAN))
+        d1 = self.ds.readPartial(str(OriginalColumn.PRICE_MEAN))
         self.assertEqual(data.size,d1.size)
     
     def test_ComputedDataObject_GetName_Method(self):

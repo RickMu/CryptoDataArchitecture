@@ -9,5 +9,5 @@ class IDataAccessor:
         return
 
     @abstractmethod
-    def read(self,key,length,TailUp= True):
+    def readPartial(self, key, length, TailUp= True):
         return

@@ -1,11 +1,8 @@
 from abc import abstractmethod
 
-class IClient:
+class IDataEntry:
 
     def insert(self,data):
-        return
-
-    def read(self,colName):
         return
 
     def readyToConsume(self):

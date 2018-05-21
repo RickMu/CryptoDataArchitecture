@@ -14,7 +14,7 @@ class ComputedDataUpdateHandler(IDataUpdateHandler):
         rqCols = indicator.getRequiredColumns()
         data = defaultdict(pd.Series)
         for col in rqCols:
-            data[col] = self._dataaccessor.read(col, updatedLength + indicator.getPeriods())
+            data[col] = self._dataaccessor.readPartial(col, updatedLength + indicator.getPeriods())
         return data
         # Needs Checking
     def _updateDataSet(self,updatedLength, indicator):
