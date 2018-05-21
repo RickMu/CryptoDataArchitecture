@@ -14,6 +14,7 @@ class CustomGraph(DataUpdateListener):
         self._axis = CustomDateAxis(orientation='bottom')
         self.graph = pg.PlotItem( axisItems={'bottom': self._axis})
         self._plots = {}
+        self._plotsBrush = {}
         self._data = defaultdict(pd.Series)
         self._tempFix_ZeroValues = {}
 
@@ -21,10 +22,11 @@ class CustomGraph(DataUpdateListener):
     def _nameToIdentifier(self,tuples):
         return str(tuples[0]) + str(tuples[1])
 
-    def addPlot(self,tuples):
+    def addPlot(self,tuples, symbol_brush= 'w'):
 
         name =  self._nameToIdentifier(tuples)
         self._plots[str(name)] = self.graph.plot()
+        self._plotsBrush[str(name)] = symbol_brush
 
         if tuples[1] == "":
             self._tempFix_ZeroValues[str(name)] = 0
@@ -53,7 +55,7 @@ class CustomGraph(DataUpdateListener):
 
         for key,v in self._plots.items():
             xy = self._parseDataToXY(key)
-            v.setData(xy, symbol='o', symbolSize=1)
+            v.setData(xy, symbol='o', symbolSize=1, symbolBrush = self._plotsBrush[key])
 
     def onDataUpdate(self, data):
         for key in self._plots.keys():

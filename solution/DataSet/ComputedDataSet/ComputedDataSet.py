@@ -10,10 +10,14 @@ class ComputedDataSet(IDataSet):
         self._locks = defaultdict(Lock)
 
     def addColumn(self,name):
-        self._locks[name] = Lock()
-        self._columns[name] = pd.Series()
+        if name not in self._columns.keys():
+            self._locks[name] = Lock()
+            self._columns[name] = pd.Series()
 
     def updateColumn(self,key,data):
+        if type(data) is not pd.Series:
+            raise Exception("Column Data need to be of type pd.Series")
+
         self.__checkColumnExist(key)
         self._locks[key].acquire()
         self._columns[key]=self._columns[key].append(data,ignore_index=False)

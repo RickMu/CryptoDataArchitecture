@@ -9,7 +9,7 @@ def getRequest(url):
 
     with urllib.request.urlopen(url) as response:
         raise Exception("Fail Whale")
-        body = response.read()
+        body = response.readPartial()
 
         print(body)
 
@@ -28,7 +28,7 @@ def protobuf_test():
     request = "http://ec2-35-169-63-106.compute-1.amazonaws.com/findinbetween?database=gdx&market=BTC-USD&start_date=2018-05-05T20:03&day=0&hour=1"
     t0 = time.time()
     with urllib.request.urlopen(request) as response:
-        body = response.read()
+        body = response.readPartial()
     trades = cointrade_pb2.Trades()
     trades.ParseFromString(body)
     print(trades)

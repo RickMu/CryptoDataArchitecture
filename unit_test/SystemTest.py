@@ -39,20 +39,20 @@ class SystemTest (TestCase):
         
         ds.updateColumns(self.df)
 
-        cpCol = ds.read(sut.getName())
+        cpCol = ds.readPartial(sut.getName())
         col = sut.getData()
         print(len(cpCol))  
         self.assertEqual(cpCol.size,col.size)        
         self.assertNotEqual(cpCol.size, 0)
 
-        cpCol = ds.read(sut2.getName())
+        cpCol = ds.readPartial(sut2.getName())
         col = sut2.getData()
         print(len(cpCol))  
         
         self.assertEqual(cpCol.size,col.size)
         self.assertNotEqual(cpCol.size, 0)
 
-        cpCol = ds.read(sut3.getName())
+        cpCol = ds.readPartial(sut3.getName())
         col = sut3.getData()
 
         print(len(cpCol))         
