@@ -4,7 +4,7 @@ class DataAccessor(IDataAccessor):
     def __init__(self,dataset, parent = None):
         IDataAccessor.__init__(self,dataset,parent)
 
-    def readPartial(self, key, length = -1, TailUp=True):
+    def readPartial(self, key, length, TailUp=True):
         allData = self.read(key)
         if TailUp:
             startPos = allData.shape[0] - length
@@ -15,7 +15,8 @@ class DataAccessor(IDataAccessor):
 
     def read(self,key):
         if self.__checkColumnExists(str(key)) is False:
-            allData = self.parent.readPartial(key)
+
+            allData = self.parent.read(key)
         else:
             allData = self._dataset.getColumn(str(key))
         return allData
@@ -26,11 +27,9 @@ class DataAccessor(IDataAccessor):
     def __checkColumnExists(self, name):
         allNames = self._dataset.getColumnNames()
 
-
-
         if name not in allNames:
             if self.parent is None:
-                raise Exception("Exception No Required Column %s " % (name))
+                raise Exception("Exception No Required Column %s " % (str(name)))
             return False
 
         return True

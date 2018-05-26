@@ -13,12 +13,14 @@ class VisualToolDataListener(BaseDataSetListener, pg.QtCore.QThread):
         else:
             self._tuples = tuples
 
+    def addIndicators(self,indicators):
+        self._tuples = indicators
+
     def onDataUpdate(self, event) -> None:
         data = {}
         if self._tuples is not None:
             for model in self._tuples:
-                modelID = self._toIdentifier(model)
-                data[modelID] = self._client.readFromTail(modelID, event)
+                data[model] = self._client.readFromTail(model, event)
         else:
             data = self._client.readAllData()
         self._consume(data)

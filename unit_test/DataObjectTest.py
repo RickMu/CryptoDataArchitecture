@@ -39,7 +39,7 @@ class DataObjectTests(unittest.TestCase):
         #This is fucked, the self.register method is aids
         rule = ColumnRule([OriginalColumn.PRICE_MEAN,OriginalColumn.PRICE_MAX,OriginalColumn.PRICE_MIN],OperatorType.STOK,20)
         mock = MagicMock(name = "getRequiredColumns", return_value=1)
-        rule.getRequiredColumns = mock
+        rule.getRequiredIndicators = mock
         sut = ComputedDataObject((ComputedColumn.RSI,12),self.ds,rule, self.mediator)
      
 

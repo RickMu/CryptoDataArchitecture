@@ -49,13 +49,13 @@ class LogicTests(unittest.TestCase):
         rqCols =[OriginalColumn.PRICE_MEAN,OriginalColumn.PRICE_MAX,OriginalColumn.PRICE_MIN]
         sut = ColumnRule(rqCols,OperatorType.STOK,20)
 
-        for i,j in zip(sut.getRequiredColumns(),rqCols):
+        for i,j in zip(sut.getRequiredIndicators(), rqCols):
             self.assertEqual(i,j)
 
         MomentumAvgP1 = str(ComputedColumn.MOMENTUM_AVG)+str(1)
 
         sut = ColumnRule([MomentumAvgP1],OperatorType.STOK,20)
-        self.assertEqual(sut.getRequiredColumns(),  [MomentumAvgP1]  )
+        self.assertEqual(sut.getRequiredIndicators(), [MomentumAvgP1])
 
 if __name__ == "__main__":
     import pandas as pd

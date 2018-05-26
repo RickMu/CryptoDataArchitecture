@@ -20,7 +20,7 @@ class DataProcessor(IProcessor):
             raise Exception("earliest time %s , is greater than latest time %s" % (earliestTime,latestedTime))
         print(latestedTime)
         datasource = self.__cachedData.append(datasource)
-        datasource.sort_index(inplace=True)
+
         data = datasource[datasource.index < latestedTime]
         self.__cachedData = datasource[datasource.index >= latestedTime]
 
@@ -39,6 +39,7 @@ class DataProcessor(IProcessor):
         print("*********************************Input Data********************************")
         print(data.shape[0])
         data = self.dataFrameToDict(data)
+
         return data
 
     #Having problem with multi-level indexing in Pandas after aggregation, Don't really understand what it is meant to do

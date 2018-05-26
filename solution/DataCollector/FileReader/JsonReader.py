@@ -18,11 +18,15 @@ class JsonReader(BaseDataProvider):
 
         with open(self._sourcePath) as f:
             while True:
-                if self._consumer.isReadyToConsume():
-                        jsonData = []
-                        for i in range(batch):
-                            data = json.loads(f.readline())
-                            jsonData.append(data)
-                        data = dataTransformer.mapInputToRequiredOutput(jsonData)
-                        self._consumer.consume(data)
-                time.sleep(2)
+                start =time.time()
+                jsonData = []
+                for i in range(batch):
+                    line = f.readline().strip("\n")
+                    jsonData.append(line)
+                jsonString = ",".join(jsonData)
+                jsonData = json.loads("[" + jsonString + "]")
+                data = dataTransformer.mapInputToRequiredOutput(jsonData)
+                end = time.time()
+                print("Json load time: " + str(end-start))
+
+                self._consumer.consume(data)

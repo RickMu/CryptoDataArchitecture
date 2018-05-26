@@ -1,6 +1,10 @@
 import sys
 
+from solution.AnalysisSystem.AnalysisSystem import AnalysisSystem
+from solution.AnalysisSystem.Strategy.ThresholdStrategy import ThresholdStrategy
+from solution.DataCollector.FileReader.JsonReader import JsonReader
 from solution.DataCollector.Schedular.Schedular import Schedular
+from solution.DataConsumer.DataSetConsumer.OfflineDataConsumer import OfflineDataConsumer
 from solution.DataConsumer.DataSetConsumer.RealTimeDataConsumer import RealTimeDataConsumer
 from solution.DataProcessor.DataProcessor import DataProcessor
 from solution.DataSetListener.VisualToolDataListener import VisualToolDataListener
@@ -116,25 +120,33 @@ if __name__ == "__main__":
         ]
     )
 
-    '''
+
     processor = DataProcessor()
     dataConsumer = OfflineDataConsumer(processor, system.getHeadDataSetController())
+    dataConsumer.start()
     dataProvider = JsonReader("B:\\MyGit\\Acx-API\\Dataset\\bitcoin.json" ,dataConsumer)
     dataProvider.start()
-    '''
 
+    '''
     processor = DataProcessor()
     dataConsumer = RealTimeDataConsumer(processor, system.getClient())
     dataConsumer.start()
 
     schlr = Schedular()
     schlr.addConsumers(dataConsumer)
-    schlr.setRequestConditions(Tickers.BITCOIN, (2, 1))
+    schlr.setRequestConditions(Tickers.BITCOIN, (4, 1))
     schlr.start()
+    '''
 
     consumer = VisualToolDataListener(system.getClient())
     app = PyQtWindowWrapper(consumer)
     system.getClient().addAdditionalSystem(consumer)
+
+    analysisSystem = AnalysisSystem()
+    analysisSystem.setToEvaluate((ComputedColumn.STOK_MOMENTUM_VOL, DAY), ThresholdStrategy(10, 80), ([1],1))
+    analysisSystem.setToEvaluate((ComputedColumn.WILLR_VOL, HOURS_5), ThresholdStrategy(10, 80), ([1], 1))
+    analysisConsumer = analysisSystem.getAnalysisSystemDatalistener(system.getClient())
+    system.getClient().addAdditionalSystem(analysisConsumer)
 
     grapher = GraphBuilder()
 
@@ -163,12 +175,11 @@ if __name__ == "__main__":
         .addGraph() \
         .addPlot((ComputedColumn.STOK_ALIGN_VOLUME_SUM_PRICE, DAY))
 
-    '''
+    print(grapher.getIndicatorTuples())
+    consumer.addIndicators(grapher.getIndicatorTuples())
 
-    .addGraph()\
-        .addPlot((ComputedColumn.MOMENTUM_BUY_MINUS_SELL_VOL_SUM,""))\
-    .addGraph()\
-        .addPlot((ComputedColumn.WILLR_MOMENTUM_BUY_MINUS_SELL_VOL_SUM,DAY))\
-    '''
     grapher.Graph(app)
     app.start()
+
+
+    
